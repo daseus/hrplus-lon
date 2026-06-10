@@ -6,14 +6,17 @@ En statisk webbapp för att granska Excel-exporter från Hr+ lokalt i webbläsar
 
 Importerade Excel-filer behandlas lokalt i användarens webbläsare. Appen laddar inte upp lönefiler till någon server.
 
-## Publicering
+## Publicering med Cloudflare Workers
 
-Publicera mappen `dist` i Cloudflare Pages.
+Projektet innehåller `wrangler.jsonc`, så Cloudflare kan publicera `dist` som statiska assets via Workers.
 
-Rekommenderad Cloudflare Pages-inställning:
+Rekommenderad Cloudflare-inställning under Workers & Pages:
 
-- Build command: lämna tomt
-- Build output directory: `dist`
+- Build command: `exit 0`
+- Deploy command: `npx wrangler deploy`
+- Path/root directory: lämna tomt eller använd projektroten
+
+`wrangler.jsonc` pekar själv ut `./dist` som publiceringsmapp.
 
 ## Uppdatera publiceringsversionen
 
