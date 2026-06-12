@@ -688,6 +688,15 @@ const APP_INFO = {
       els.allViewButton.classList.toggle("active", state.viewMode === "all");
       els.sortSelect.value = state.sortBy;
       els.mergeSplitsInput.checked = state.mergeSplits;
+      const hasTechnicalRows = state.rows.some((row) => row.isTechnical);
+      if (!hasTechnicalRows) {
+        state.showTechnical = false;
+        els.showTechnicalInput.checked = false;
+      }
+      els.showTechnicalInput.disabled = !enabled || !hasTechnicalRows;
+      els.showTechnicalInput.parentElement.title = hasTechnicalRows
+        ? "Visar eller döljer arbetsgivaravgifter, pensions-/försäkringsrader och andra bokföringsrader."
+        : "Den importerade filen innehåller inga tekniska/bokföringsrader att visa.";
       els.pagerStatus.textContent = employees.length
         ? `${selectedIndex + 1 || 1} av ${employees.length}`
         : "0 av 0";
