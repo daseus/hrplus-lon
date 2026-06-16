@@ -315,9 +315,10 @@ function renderEmployeeList() {
       els.main.scrollTop = 0;
     });
     button.innerHTML = `
-      <span>
+      <span class="employee-info">
         <span class="employee-name">${escapeHtml(employee.name)}</span>
-        <span class="employee-meta">Anst.nr ${escapeHtml(employee.employeeId || "-")} · ${visibleRows.length}/${employee.rows.length} rader</span>
+        <span class="employee-meta">Anst.nr ${escapeHtml(employee.employeeId || "-")}</span>
+        <span class="employee-meta">${visibleRows.length}/${employee.rows.length} rader</span>
       </span>
       <span class="employee-total" title="${escapeHtml(listTotal.label)}">${formatCurrency(listTotal.amount)}</span>
     `;

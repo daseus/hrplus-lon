@@ -394,6 +394,12 @@ select:focus-visible {
   color: #fff;
 }
 
+.employee-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
 .employee-name {
   font-weight: 700;
   overflow-wrap: anywhere;

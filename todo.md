@@ -1,5 +1,11 @@
 # Att göra
 
+## Planerat
+
+- [ ] **Löpande förbättringsdokumentation.** Håll `docs/FORBATTRINGSFORSLAG.md`
+  (och ev. fler dok) uppdaterad med våra förbättringar och förslag allteftersom,
+  så att de kan sammanställas till en kommande PR mot org-repot (daseus/hrplus-lon).
+
 ## Klart
 
 - [x] **GHCR-paketet publikt** och demon växlad till `ghcr.io/armandur/hrplus-lon:latest`.
