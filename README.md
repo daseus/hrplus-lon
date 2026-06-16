@@ -20,7 +20,15 @@ Rekommenderad Cloudflare-inställning under Workers & Pages:
 
 ## Uppdatera publiceringsversionen
 
-Kör detta lokalt efter ändringar i `index.html` eller `source-notice.html`:
+Kör detta lokalt efter ändringar i `index.html` eller `source-notice.html`.
+
+Plattformsoberoende (kräver Node):
+
+```bash
+node build.mjs
+```
+
+Windows (PowerShell), motsvarande:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\build.ps1

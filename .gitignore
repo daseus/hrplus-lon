@@ -16,6 +16,9 @@ desktop.ini
 # Dependency folders if tooling is added later.
 node_modules/
 
+# Lokala arbetsartefakter (granskningar, scratch).
+tmp/
+
 # Keep dist committed for Cloudflare Pages.
 !dist/
 !dist/**
