@@ -4,6 +4,18 @@ Hur jag skulle gå tillväga om jag gjorde om/förbättrade projektet, vad jag s
 ändra och varför. Baserat på den nuvarande koden (en `index.html` på ~2300 rader
 med inbäddad CSS/JS, byggd till `dist/` via `build.mjs`).
 
+## Status: genomfört på branchen `forbattringsforslag`
+
+Samtliga etapper nedan är implementerade:
+
+- Etapp 1: ren logik i `src/logic/` + `node:test`-svit (20 tester) + CI.
+- Etapp 2: CSS/JS flyttat till `src/`, native ESM, lazy-laddad xlsx, förenklat bygge.
+- Etapp 3: locale-robust `parseNumber` (kolumn-alias avvaktar en riktig export).
+- Etapp 4: strukturerad import-feedback (typ, antal, överhoppade rader, varning).
+- Etapp 5: `tsc --checkJs` på `src/logic` i CI + JSDoc-typer.
+
+Det ursprungliga förslaget följer nedan som referens.
+
 ## Filosofi: vad jag behåller
 
 Projektet har en stark grund som jag inte skulle slänga:
