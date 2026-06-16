@@ -8,10 +8,21 @@ export function cleanText(value) {
 export function parseNumber(value) {
   if (value === null || value === undefined || value === "") return 0;
   if (typeof value === "number") return Number.isFinite(value) ? value : 0;
-  const normalized = String(value)
-    .replace(/\s/g, "")
-    .replace(/\./g, "")
-    .replace(",", ".");
+  const s = String(value).replace(/\s/g, "");
+  const hasComma = s.includes(",");
+  const hasDot = s.includes(".");
+  let normalized;
+  if (hasComma && hasDot) {
+    // Båda finns: den högraste är decimaltecken, den andra är tusentalsavgränsare.
+    normalized = s.lastIndexOf(",") > s.lastIndexOf(".")
+      ? s.replace(/\./g, "").replace(",", ".")
+      : s.replace(/,/g, "");
+  } else if (hasComma) {
+    normalized = s.replace(",", ".");
+  } else {
+    // Endast punkt: tolkas som tusentalsavgränsare (svenskt format).
+    normalized = s.replace(/\./g, "");
+  }
   const parsed = Number(normalized);
   return Number.isFinite(parsed) ? parsed : 0;
 }

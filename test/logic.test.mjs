@@ -31,6 +31,12 @@ test("parseNumber tolkar svenskt format", () => {
   assert.equal(parseNumber("abc"), 0);
 });
 
+test("parseNumber hanterar även internationellt format", () => {
+  assert.equal(parseNumber("1,234.56"), 1234.56); // engelskt: komma=tusental, punkt=decimal
+  assert.equal(parseNumber("1.234,56"), 1234.56); // europeiskt: punkt=tusental, komma=decimal
+  assert.equal(parseNumber("1 000 000,00"), 1000000);
+});
+
 test("formatDate normaliserar datum", () => {
   assert.equal(formatDate("20260525"), "2026-05-25");
   assert.equal(formatDate("2026-05-25T00:00:00"), "2026-05-25");
