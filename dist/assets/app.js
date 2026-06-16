@@ -94,6 +94,12 @@ const APP_INFO = {
       metadata: null
     };
 
+    // "Visa alla" renderar varje rapport lazy först när den närmar sig vyn.
+    // Under tröskeln renderas allt direkt (oförändrat beteende, Ctrl+F träffar allt).
+    const ALL_VIEW_LAZY_THRESHOLD = 40;
+    let allViewObserver = null;
+    let allViewSlots = [];
+
     const els = {
       fileInput: document.getElementById("fileInput"),
       searchInput: document.getElementById("searchInput"),
@@ -141,6 +147,7 @@ const APP_INFO = {
     });
     els.printButton.addEventListener("click", () => window.print());
     els.printAllButton.addEventListener("click", printAll);
+    window.addEventListener("beforeprint", renderAllReportSlots);
     els.singleViewButton.addEventListener("click", () => {
       state.viewMode = "single";
       render();
@@ -563,6 +570,12 @@ const APP_INFO = {
         return;
       }
 
+      if (allViewObserver) {
+        allViewObserver.disconnect();
+        allViewObserver = null;
+      }
+      allViewSlots = [];
+
       if (!employees.length) {
         els.main.innerHTML = `
           <section class="empty-state">
@@ -579,15 +592,69 @@ const APP_INFO = {
       const visibleRows = employees.flatMap((employee) => getReportRows(employee));
       const totalRows = employees.reduce((count, employee) => count + employee.rows.length, 0);
 
-      els.main.innerHTML = `
+      const head = `
         ${renderPrintHeader(state.metadata ? state.metadata.sourceLabel : "Löneunderlagslista")}
         ${renderSourceNotice()}
         ${renderReportToolbar(
           "Alla anställda",
           `${employees.length} anställda · ${visibleRows.length} synliga rader · ${totalRows} totalrader`
         )}
-        ${employees.map((employee) => renderEmployeeReport(employee, true)).join("")}
       `;
+
+      if (employees.length <= ALL_VIEW_LAZY_THRESHOLD) {
+        els.main.innerHTML = `${head}${employees.map((employee) => renderEmployeeReport(employee, true)).join("")}`;
+        return;
+      }
+
+      els.main.innerHTML = `${head}<div id="allReports"></div>`;
+      const container = document.getElementById("allReports");
+      const fragment = document.createDocumentFragment();
+      allViewSlots = [];
+      for (const employee of employees) {
+        const slot = document.createElement("div");
+        slot.className = "report-slot";
+        slot.style.minHeight = `${estimateReportHeight(employee)}px`;
+        slot._employee = employee;
+        fragment.appendChild(slot);
+        allViewSlots.push(slot);
+      }
+      container.appendChild(fragment);
+
+      allViewObserver = new IntersectionObserver((entries, observer) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            fillReportSlot(entry.target);
+            observer.unobserve(entry.target);
+          }
+        }
+      }, { root: els.main, rootMargin: "800px 0px" });
+
+      for (const slot of allViewSlots) {
+        allViewObserver.observe(slot);
+      }
+    }
+
+    function estimateReportHeight(employee) {
+      return 220 + getReportRows(employee).length * 30;
+    }
+
+    function fillReportSlot(slot) {
+      if (!slot || slot.dataset.filled === "true" || !slot._employee) return;
+      slot.innerHTML = renderEmployeeReport(slot._employee, true);
+      slot.style.minHeight = "";
+      slot.dataset.filled = "true";
+    }
+
+    // Utskrift kräver att alla rapporter finns i DOM:en. Fyll därför kvarvarande
+    // slots innan print (knapp, Ctrl+P och beforeprint-eventet).
+    function renderAllReportSlots() {
+      if (allViewObserver) {
+        allViewObserver.disconnect();
+        allViewObserver = null;
+      }
+      for (const slot of allViewSlots) {
+        fillReportSlot(slot);
+      }
     }
 
     function renderPrintHeader(title) {
@@ -947,6 +1014,7 @@ const APP_INFO = {
     function printAll() {
       state.viewMode = "all";
       render();
+      renderAllReportSlots();
       setTimeout(() => window.print(), 50);
     }
 
