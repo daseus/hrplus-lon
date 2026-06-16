@@ -19,3 +19,5 @@ jobs:
           node-version: 22
       - name: Kör testsvit
         run: node --test
+      - name: Typkontroll (tsc --checkJs)
+        run: npx -y -p typescript tsc --noEmit -p tsconfig.json

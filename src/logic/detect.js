@@ -1,5 +1,22 @@
 // Identifiering av exporttyp utifrån vilka fält som finns.
 
+/**
+ * @typedef {Object} SourceType
+ * @property {"transactionList"|"accounting"|"payrollList"|"unknown"} sourceKey
+ * @property {string} sourceLabel
+ * @property {string} sourceShortLabel
+ * @property {"normal"|"warning"} sourceTone
+ * @property {string} dateLabel
+ * @property {string} sourceDescription
+ */
+
+/**
+ * @param {boolean} hasBookingDate
+ * @param {boolean} hasAccount
+ * @param {boolean} hasScope
+ * @param {string} [explicitSourceType]
+ * @returns {SourceType}
+ */
 export function getSourceType(hasBookingDate, hasAccount, hasScope, explicitSourceType = "") {
   if (explicitSourceType === "transactionList") {
     return {
