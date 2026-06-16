@@ -134,6 +134,34 @@ precis den klass av bugg projektet är känsligt för. Passar "ingen bundler".
 - **Ingen virtualiseringsmotor från hyllan.** Den enkla IntersectionObserver-
   lösningen räcker för storleksordningen.
 
+## CSS-ramverk (t.ex. Bootstrap) i stället för egen CSS?
+
+Nej, jag skulle inte byta till Bootstrap här. Den handknackade CSS:en är en
+tillgång, inte en skuld.
+
+- **Designen finns redan och är sammanhållen** (~947 rader, egen palett, CSS-
+  variabler, tydligt utseende). Bootstrap tvingar på "Bootstrap-looken" om man
+  inte tungt överskriver den, och då har man både Bootstrap *och* egen CSS att
+  underhålla.
+- **Det här är ett utskriftsverktyg.** `@media print` är skräddarsydd
+  (sidbrytningar, dölj/visa, kolumnlayout per underlagstyp). Bootstraps print-
+  stöd är generiskt och skulle göra utskriften svårare, inte enklare.
+- **Native `<dialog>` används redan.** Bootstraps interaktiva komponenter kräver
+  Bootstraps JS, vilket vore ett steg bakåt mot fler beroenden och sämre CSP.
+- **Vikt och stack.** Bootstrap lägger på ~200 kB+ på en medvetet lätt app, och
+  ingår inte i den vanliga vanilla-stacken.
+
+**När det vore vettigt:** om man inte vill skriva CSS alls, bygger flera verktyg
+som ska se enhetliga ut, eller har ett team som redan kan Bootstrap. Inget av det
+stämmer in på en enskilt underhållen intern app med redan polerad design.
+
+**Mellanväg om motivet är struktur, inte utseende:** behåll egen CSS men
+formalisera design-tokens (bygg vidare på `--bg`, `--accent` osv.) och lägg ett
+tunt utility-lager. Ett klasslöst ramverk (Pico.css, Water.css) krockar med den
+befintliga designen och blir i praktiken också en omskrivning. Rekommendationen
+är alltså: behåll egen CSS, gör den mer modulär (extern `styles.css` + tokens)
+enligt etapp 2.
+
 ## Föreslagen etappordning
 
 1. **Regressionsnät:** extrahera ren logik till moduler + `node:test`-svit som
