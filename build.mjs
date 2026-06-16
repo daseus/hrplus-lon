@@ -48,10 +48,16 @@ for (const file of logicFiles) {
 copyFileSync(sourceVendor, join(dist, "vendor", "xlsx.full.min.js"));
 
 const headers = `/*
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
   X-Content-Type-Options: nosniff
   Referrer-Policy: no-referrer
   Permissions-Policy: camera=(), microphone=(), geolocation=()
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
 `;
 writeFileSync(join(dist, "_headers"), headers, "utf8");
 
