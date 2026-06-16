@@ -374,7 +374,7 @@ function renderSelectedEmployee() {
     els.main.innerHTML = `
       <section class="empty-state">
         <h2>Ingen fil importerad</h2>
-        <p>Välj Excel-exporten från Hr+. All bearbetning sker lokalt i webbläsaren.</p>
+        <p>Välj eller släpp Excel-exporten från Hr+ här. All bearbetning sker lokalt i webbläsaren.</p>
       </section>
     `;
     els.printButton.disabled = true;
