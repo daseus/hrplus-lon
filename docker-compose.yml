@@ -1,0 +1,10 @@
+# Single-container-drift mot färdig image från GHCR (byggs av GitHub Actions).
+# Gör paketet publikt i GitHub Packages första gången, annars krävs inloggning.
+# För lokalt bygge utan GHCR, använd docker-compose.dev.yml.
+services:
+  app:
+    image: ghcr.io/armandur/hrplus-lon:latest
+    container_name: hrplus-lon
+    ports:
+      - "8848:80"
+    restart: unless-stopped

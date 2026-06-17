@@ -1,0 +1,7 @@
+.git
+tmp
+node_modules
+dist
+*.md
+build.ps1
+wrangler.jsonc

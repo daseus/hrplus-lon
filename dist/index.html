@@ -18,8 +18,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Löneunderlagsgranskare</title>
-  <script src="vendor/xlsx.full.min.js"></script>
-  <link rel="stylesheet" href="assets/app.css?v=b0097d627c9a">
+  <link rel="stylesheet" href="assets/app.css">
 </head>
 <body>
   <div class="app">
@@ -62,7 +61,7 @@
     <div class="content">
       <aside class="sidebar">
         <div class="sidebar-tools">
-          <input id="searchInput" type="search" placeholder="Sök namn, anst.nr eller löneart" disabled>
+          <input id="searchInput" type="search" placeholder="Sök namn, anst.nr eller löneart" aria-label="Sök namn, anst.nr eller löneart" disabled>
           <div class="view-controls">
             <div class="segmented" aria-label="Vy">
               <button id="singleViewButton" class="active" type="button" disabled>Vald person</button>
@@ -99,9 +98,16 @@
       <main id="main">
         <section class="empty-state">
           <h2>Ingen fil importerad</h2>
-          <p>Välj Excel-exporten från Hr+. All bearbetning sker lokalt i webbläsaren.</p>
+          <p>Välj eller släpp Excel-exporten från Hr+ här. All bearbetning sker lokalt i webbläsaren.</p>
         </section>
       </main>
+    </div>
+  </div>
+
+  <div id="dropOverlay" aria-hidden="true">
+    <div class="drop-hint">
+      <div class="drop-hint-icon">⬇</div>
+      Släpp Excel-filen här för att importera
     </div>
   </div>
 
@@ -127,6 +133,15 @@
         </ol>
       </section>
       <section>
+        <h3>Snabbimport och kortkommandon</h3>
+        <ul>
+          <li><strong>Dra och släpp:</strong> släpp en Excel-fil var som helst på sidan för att importera den, som alternativ till <strong>Importera underlag</strong>.</li>
+          <li><strong>j</strong> - gå till nästa anställd (neråt i listan).</li>
+          <li><strong>k</strong> - gå till föregående anställd (uppåt i listan).</li>
+        </ul>
+        <p>Kortkommandona fungerar när du inte skriver i sökrutan.</p>
+      </section>
+      <section>
         <h3>Underlagstyper</h3>
         <p><strong>Bokföringsposter</strong> används för att granska bokförd löneunderlagslista när underlaget är klart för månaden.</p>
         <p><strong>Transaktionslista</strong> visar lönearter, preliminärskatt och utbetald nettolön när löneservice har börjat arbeta med lönerna. Den kan ge bättre inblick än löneunderlagslistan, men behöver inte betyda att månaden är helt färdig.</p>
@@ -142,6 +157,10 @@
       <section>
         <h3>Om programmet</h3>
         <p id="aboutText"></p>
+        <div id="buildSection" class="build-section" hidden>
+          <h4>Version i drift</h4>
+          <dl id="buildInfo" class="build-info"></dl>
+        </div>
       </section>
       <section>
         <h3>Kontakt</h3>
@@ -162,6 +181,6 @@
     </div>
   </dialog>
 
-  <script src="assets/app.js?v=7b34ad5ddef4"></script>
+  <script type="module" src="assets/app.js"></script>
 </body>
 </html>

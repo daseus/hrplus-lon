@@ -1,0 +1,23 @@
+# Lokalt bygge (ingen GHCR krävs). Bygginfo skickas in via env-variabler så att
+# version.json speglar den lokala git-checkouten.
+#
+# Kör:
+#   REPO=$(git config --get remote.origin.url) \
+#   BRANCH=$(git rev-parse --abbrev-ref HEAD) \
+#   COMMIT_FULL=$(git rev-parse HEAD) \
+#   BUILT_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ) \
+#   docker compose -f docker-compose.dev.yml up -d --build
+services:
+  app:
+    build:
+      context: .
+      args:
+        REPO: ${REPO:-}
+        BRANCH: ${BRANCH:-}
+        COMMIT_FULL: ${COMMIT_FULL:-}
+        BUILT_AT: ${BUILT_AT:-}
+    image: hrplus-lon:local
+    container_name: hrplus-lon
+    ports:
+      - "8848:80"
+    restart: unless-stopped
