@@ -1854,6 +1854,22 @@
       return "other";
     }
 
+    function isPayrollGrossRow(row) {
+      const payCode = cleanText(row && row.payCode).toLowerCase();
+      const description = cleanText(row && row.description).toLowerCase();
+      return /^bru$|^brutto$/.test(payCode) || /bruttolön|brutto/.test(description);
+    }
+
+    function isPayrollNetPayRow(row) {
+      const payCode = cleanText(row && row.payCode).toLowerCase();
+      const description = cleanText(row && row.description).toLowerCase();
+      return /^990\b/.test(payCode) || /utbetald\s*nett|nett[oö]lön/.test(description);
+    }
+
+    function isPayrollSummaryRow(row) {
+      return isPayrollGrossRow(row) || isPayrollNetPayRow(row);
+    }
+
     function render() {
       renderEmployeeList();
       renderMainView();
@@ -2031,7 +2047,7 @@
 
     function renderEmployeeReport(employee, isAllReport = false) {
       const visibleRows = getReportRows(employee);
-      const sections = groupRowsBySection(visibleRows);
+      const sections = groupRowsBySection(getSectionRows(visibleRows));
       const totals = getSummaryTotals(employee, visibleRows);
       const summaryBoxes = getSummaryBoxes(totals);
 
@@ -2064,7 +2080,18 @@
 
     function getSummaryBoxes(totals) {
       const sourceKey = state.metadata ? state.metadata.sourceKey : "";
-      if (["payrollDraftHr", "payrollDraftI"].includes(sourceKey)) {
+      if (sourceKey === "payrollDraftI") {
+        return [
+          { label: "Bruttolön", amount: totals.gross },
+          { label: "Skatt/avdrag", amount: totals.tax },
+          { label: "Nettolön", amount: totals.netPay },
+          { label: "Lön/arvoden", amount: totals.pay },
+          { label: "Ers./utlägg", amount: totals.reimbursement },
+          { label: "Frånvaro/sem.", amount: totals.absence }
+        ];
+      }
+
+      if (sourceKey === "payrollDraftHr") {
         return [
           { label: "Summa poster", amount: totals.visible },
           { label: "Lön/arvoden", amount: totals.pay },
@@ -2147,22 +2174,39 @@
       }, {});
     }
 
+    function getSectionRows(rows) {
+      const sourceKey = state.metadata ? state.metadata.sourceKey : "";
+      if (sourceKey !== "payrollDraftI") return rows;
+      return rows.filter((row) => !isPayrollGrossRow(row));
+    }
+
     function getSummaryTotals(employee, visibleRows) {
-      const pay = sum(visibleRows.filter((row) => row.category === "pay"), "amount");
-      const absence = sum(visibleRows.filter((row) => row.category === "absence"), "amount");
-      const reimbursement = sum(visibleRows.filter((row) => row.category === "reimbursement"), "amount");
-      const other = sum(visibleRows.filter((row) => row.category === "other"), "amount");
-      const tax = sum(visibleRows.filter((row) => row.category === "tax"), "amount");
-      const netPay = Math.abs(sum(visibleRows.filter((row) => row.category === "net"), "amount"));
+      const sourceKey = state.metadata ? state.metadata.sourceKey : "";
+      const explicitGross = sum(visibleRows.filter((row) => isPayrollGrossRow(row)), "amount");
+      const explicitNet = sum(visibleRows.filter((row) => isPayrollNetPayRow(row)), "amount");
+      const transactionRows = sourceKey === "payrollDraftI"
+        ? visibleRows.filter((row) => !isPayrollSummaryRow(row))
+        : visibleRows;
+      const pay = sum(transactionRows.filter((row) => row.category === "pay"), "amount");
+      const absence = sum(transactionRows.filter((row) => row.category === "absence"), "amount");
+      const reimbursement = sum(transactionRows.filter((row) => row.category === "reimbursement"), "amount");
+      const other = sum(transactionRows.filter((row) => row.category === "other"), "amount");
+      const tax = sum(transactionRows.filter((row) => row.category === "tax"), "amount");
+      const netPay = Math.abs(explicitNet || sum(visibleRows.filter((row) => row.category === "net"), "amount"));
+      const gross = explicitGross || pay + absence + reimbursement + other;
       return {
-        visible: sum(visibleRows, "amount"),
-        gross: pay + absence + reimbursement + other,
+        visible: sum(transactionRows, "amount"),
+        gross,
         pay,
         absence,
         reimbursement,
         other,
         tax,
-        netPay
+        netPay,
+        explicitGross,
+        explicitNet,
+        usesExplicitGross: sourceKey === "payrollDraftI" && Boolean(explicitGross),
+        usesExplicitNet: sourceKey === "payrollDraftI" && Boolean(explicitNet)
       };
     }
 
@@ -2173,6 +2217,12 @@
         return { label: "Nettolön/utbetalt", amount: totals.netPay };
       }
       if (["payrollDraftHr", "payrollDraftI"].includes(sourceKey)) {
+        if (sourceKey === "payrollDraftI" && totals.usesExplicitNet) {
+          return { label: "Nettolön", amount: totals.netPay };
+        }
+        if (sourceKey === "payrollDraftI" && totals.usesExplicitGross) {
+          return { label: "Bruttolön", amount: totals.gross };
+        }
         return { label: "Summa synliga lönepåverkande poster", amount: totals.visible };
       }
       return { label: "Summa synliga poster", amount: totals.visible };
