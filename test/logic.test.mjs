@@ -13,6 +13,9 @@ import {
   parseTransactionList, findTransactionCompany, findTransactionPaymentDate
 } from "../src/logic/transactions.js";
 import { summarizeSingleOrSpan, summarizeDateSpan } from "../src/logic/dates.js";
+import {
+  isPayrollGrossRow, isPayrollNetPayRow, isPayrollSummaryRow, addPayrollReconciliationRows
+} from "../src/logic/payroll.js";
 
 test("cleanText trimmar och hanterar null", () => {
   assert.equal(cleanText("  hej  "), "hej");
@@ -88,8 +91,9 @@ test("splitFullName delar för- och efternamn", () => {
 
 test("categorizeRow klassificerar lönerader", () => {
   assert.equal(categorizeRow("990", "Arbetsgivaravgift"), "technical");
-  assert.equal(categorizeRow("901", "Nettolön utbetald"), "net");
+  assert.equal(categorizeRow("990", "Utbetald nettolön"), "net");
   assert.equal(categorizeRow("811", "Preliminärskatt"), "tax");
+  assert.equal(categorizeRow("", "Nettolöneavdrag"), "tax");
   assert.equal(categorizeRow("611", "Sjukfrånvaro karens"), "absence");
   assert.equal(categorizeRow("421", "Bilersättning tjänst"), "reimbursement");
   assert.equal(categorizeRow("111", "Månadslön"), "pay");
@@ -98,8 +102,10 @@ test("categorizeRow klassificerar lönerader", () => {
 
 test("getSourceType identifierar exporttyp", () => {
   assert.equal(getSourceType(false, false, false, "transactionList").sourceKey, "transactionList");
+  assert.equal(getSourceType(false, false, false, "payrollDraftI").sourceKey, "payrollDraftI");
+  assert.equal(getSourceType(false, false, false, "payrollDraftHr").sourceKey, "payrollDraftHr");
   assert.equal(getSourceType(true, true, false).sourceKey, "accounting");
-  assert.equal(getSourceType(false, false, true).sourceKey, "payrollList");
+  assert.equal(getSourceType(false, false, true).sourceKey, "payrollDraftHr");
   assert.equal(getSourceType(false, false, false).sourceKey, "unknown");
 });
 
@@ -123,7 +129,9 @@ test("parseTransactionList parsar och hårdkodar INTE företagsnamn", () => {
     ["Arbetstagare", "Namn", "Typ", "Löneart", "Konto", "Avvikande kostnadsställe", "Belopp"],
     ["50001", "Anna Andersson", "Lön", "111 - Månadslön", "7010", "", 32000]
   ];
-  const rows = parseTransactionList(matrix);
+  const result = parseTransactionList(matrix);
+  const rows = result.rows;
+  assert.equal(result.sourceType, "transactionList");
   assert.equal(rows.length, 1);
   assert.equal(rows[0]["Företagsnamn"], "Testförsamlingen");
   assert.notEqual(rows[0]["Företagsnamn"], "Lerums församling");
@@ -136,7 +144,40 @@ test("parseTransactionList parsar och hårdkodar INTE företagsnamn", () => {
 
 test("parseTransactionList ger tom lista för annat format", () => {
   const matrix = [["Anst.nr", "Förnamn", "Efternamn", "Löneart", "Beskrivning", "Belopp"]];
-  assert.deepEqual(parseTransactionList(matrix), []);
+  assert.deepEqual(parseTransactionList(matrix).rows, []);
+});
+
+test("payroll-rad-identifiering (brutto/netto/summering)", () => {
+  assert.ok(isPayrollGrossRow({ payCode: "bru", description: "Bruttolön" }));
+  assert.ok(isPayrollGrossRow({ payCode: "", description: "Brutto" }));
+  assert.ok(isPayrollNetPayRow({ payCode: "990", description: "Utbetald nettolön" }));
+  assert.ok(isPayrollSummaryRow({ payCode: "brutto", description: "" }));
+  assert.ok(!isPayrollSummaryRow({ payCode: "111", description: "Månadslön" }));
+});
+
+test("addPayrollReconciliationRows synliggör dolt nettoavdrag", () => {
+  const rows = [
+    { payCode: "bru", description: "Bruttolön", amount: 30000, category: "pay" },
+    { payCode: "", description: "Preliminärskatt", amount: -9000, category: "tax" },
+    { payCode: "990", description: "Utbetald nettolön", amount: 18000, category: "net" }
+  ];
+  const out = addPayrollReconciliationRows(rows, "payrollDraftI");
+  assert.equal(out.length, 4);
+  const derived = out[out.length - 1];
+  assert.equal(derived.amount, -3000);
+  assert.equal(derived.category, "tax");
+  assert.equal(derived.isDerived, true);
+  assert.match(derived.description, /nettoavdrag/i);
+});
+
+test("addPayrollReconciliationRows rör inte andra källtyper eller balanserade underlag", () => {
+  const rows = [
+    { payCode: "bru", description: "Bruttolön", amount: 30000, category: "pay" },
+    { payCode: "", description: "Preliminärskatt", amount: -9000, category: "tax" },
+    { payCode: "990", description: "Utbetald nettolön", amount: 21000, category: "net" }
+  ];
+  assert.equal(addPayrollReconciliationRows(rows, "accounting").length, 3);
+  assert.equal(addPayrollReconciliationRows(rows, "payrollDraftI").length, 3);
 });
 
 test("summarizeDateSpan/summarizeSingleOrSpan", () => {

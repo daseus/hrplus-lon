@@ -10,7 +10,7 @@ export function parseTransactionList(matrix) {
       && labels.includes("löneart")
       && labels.includes("belopp");
   });
-  if (headerIndex === -1) return [];
+  if (headerIndex === -1) return { sourceType: "", rows: [], warnings: [] };
 
   const header = matrix[headerIndex].map(cleanText);
   const employeeIndex = header.findIndex((value) => value === "Arbetstagare");
@@ -23,9 +23,22 @@ export function parseTransactionList(matrix) {
   const paymentDate = findTransactionPaymentDate(matrix);
   const company = findTransactionCompany(matrix, headerIndex);
 
-  if (employeeIndex === -1 || nameIndex === -1 || payItemIndex === -1 || amountIndex === -1) return [];
+  const missingRequired = [
+    ["Arbetstagare", employeeIndex],
+    ["Namn", nameIndex],
+    ["Löneart", payItemIndex],
+    ["Belopp", amountIndex]
+  ].filter(([, index]) => index === -1).map(([name]) => name);
 
-  return matrix.slice(headerIndex + 1)
+  if (missingRequired.length) {
+    return {
+      sourceType: "transactionList",
+      rows: [],
+      warnings: [`Transaktionslista hittad men saknar obligatoriska kolumner: ${missingRequired.join(", ")}.`]
+    };
+  }
+
+  const rows = matrix.slice(headerIndex + 1)
     .map((row) => {
       const workerId = cleanText(row[employeeIndex]);
       const fullName = cleanText(row[nameIndex]);
@@ -53,6 +66,11 @@ export function parseTransactionList(matrix) {
       };
     })
     .filter(Boolean);
+
+  const warnings = [];
+  if (!paymentDate) warnings.push("Transaktionslista: kunde inte läsa utbetalningsdatum från sidhuvudet.");
+
+  return { sourceType: "transactionList", rows, warnings };
 }
 
 export function findTransactionPaymentDate(matrix) {

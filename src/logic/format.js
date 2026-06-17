@@ -72,6 +72,10 @@ export function sum(rows, field) {
   return rows.reduce((total, row) => total + (Number(row[field]) || 0), 0);
 }
 
+export function roundCurrency(value) {
+  return Math.round((Number(value) || 0) * 100) / 100;
+}
+
 export function escapeHtml(value) {
   return cleanText(value)
     .replace(/&/g, "&amp;")

@@ -12,6 +12,7 @@ import { parseTransactionList } from "../src/logic/transactions.js";
 import { getSourceType } from "../src/logic/detect.js";
 import { resolveColumn, getText, getNumber } from "../src/logic/columns.js";
 import { categorizeRow } from "../src/logic/categorize.js";
+import { parsePayrollDraftRows } from "../src/logic/payrollDraft.js";
 
 const require = createRequire(import.meta.url);
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -34,8 +35,10 @@ test("transaktionslista: riktig xlsx -> parseTransactionList", () => {
   ];
   const wb = XLSX.read(toSheetBuffer(aoa), { type: "buffer", cellDates: false, raw: true });
   const matrix = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: "", raw: true });
-  const rows = parseTransactionList(matrix);
+  const result = parseTransactionList(matrix);
+  const rows = result.rows;
 
+  assert.equal(result.sourceType, "transactionList");
   assert.equal(rows.length, 2);
   assert.equal(rows[0]["Företagsnamn"], "Testförsamlingen");
   assert.equal(rows[0]["Förnamn"], "Anna");
@@ -55,7 +58,7 @@ test("bokföringsposter: riktig xlsx -> objektform, kolumner och kategorisering"
   const wb = XLSX.read(toSheetBuffer(aoa), { type: "buffer", cellDates: false, raw: true });
   const sheet = wb.Sheets[wb.SheetNames[0]];
   // Transaktionslist-detektering ska INTE slå till på detta format.
-  assert.equal(parseTransactionList(XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "", raw: true })).length, 0);
+  assert.equal(parseTransactionList(XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "", raw: true })).rows.length, 0);
 
   const objs = XLSX.utils.sheet_to_json(sheet, { defval: "", raw: true });
   assert.equal(objs.length, 2);
@@ -71,7 +74,7 @@ test("bokföringsposter: riktig xlsx -> objektform, kolumner och kategorisering"
   assert.equal(categorizeRow(getText(objs[1], "payCode"), getText(objs[1], "description")), "technical");
 });
 
-test("löneunderlagslista: riktig xlsx -> payrollList", () => {
+test("löneunderlagslista (Hr+, objektform): riktig xlsx -> payrollDraftHr", () => {
   const aoa = [
     ["Företag", "Företagsnamn", "Anst.nr", "Förnamn", "Efternamn", "Löneart", "Beskrivning", "Belopp", "Omfattning %"],
     ["044", "Testförsamlingen", "1001", "Anna", "Andersson", "111", "Månadslön", 32000, 100]
@@ -82,5 +85,36 @@ test("löneunderlagslista: riktig xlsx -> payrollList", () => {
   const hasBooking = objs.some((r) => getText(r, "bookingDate"));
   const hasAccount = objs.some((r) => getText(r, "account"));
   const hasScope = objs.some((r) => getNumber(r, "scope"));
-  assert.equal(getSourceType(hasBooking, hasAccount, hasScope).sourceKey, "payrollList");
+  assert.equal(getSourceType(hasBooking, hasAccount, hasScope).sourceKey, "payrollDraftHr");
+});
+
+test("Löneunderlag från I: riktig xlsx -> payrollDraftI", () => {
+  const aoa = [
+    ["Företag", "Anst.id", "Arbtag.id", "Förnamn", "Efternamn", "Löneart", "Benämning", "Apris", "Tim/Antal", "Belopp", "Fr.o.m.", "T.o.m.", "Konto", "Textfält 1"],
+    ["Testförsamlingen", "1001", "50001", "Anna", "Andersson", "111", "Månadslön", 250, 1, 32000, "2026-05-01", "2026-05-31", "7010", "KST1"]
+  ];
+  const wb = XLSX.read(toSheetBuffer(aoa), { type: "buffer", cellDates: false, raw: true });
+  const matrix = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: "", raw: true });
+  const result = parsePayrollDraftRows(matrix);
+
+  assert.equal(result.sourceType, "payrollDraftI");
+  assert.equal(result.rows.length, 1);
+  assert.equal(result.rows[0]["Anst.nr"], "1001");
+  assert.equal(result.rows[0]["Förnamn"], "Anna");
+  assert.equal(result.rows[0]["Löneart"], "111");
+  assert.equal(result.rows[0]["Belopp"], 32000);
+});
+
+test("Löneunderlagslista (Hr+) utan I-nyckelord -> payrollDraftHr", () => {
+  const aoa = [
+    ["Arbtag.id", "Anst.nr", "Förnamn", "Efternamn", "Löneart", "Benämning", "Belopp", "Fr.o.m.", "T.o.m.", "Omf."],
+    ["50001", "1001", "Anna", "Andersson", "111", "Månadslön", 32000, "2026-05-01", "2026-05-31", 100]
+  ];
+  const wb = XLSX.read(toSheetBuffer(aoa), { type: "buffer", cellDates: false, raw: true });
+  const matrix = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: "", raw: true });
+  const result = parsePayrollDraftRows(matrix);
+
+  assert.equal(result.sourceType, "payrollDraftHr");
+  assert.equal(result.rows.length, 1);
+  assert.equal(result.rows[0]["Anst.nr"], "1001");
 });

@@ -40,9 +40,9 @@ export const TECHNICAL_PATTERNS = [
 export function categorizeRow(payCode, description) {
   const text = `${payCode} ${description}`;
   if (TECHNICAL_PATTERNS.some((pattern) => pattern.test(text))) return "technical";
-  if (/nettolön/i.test(text)) return "net";
-  if (/skatt|utmätning|avdrag|öresutjämning/i.test(text)) return "tax";
+  if (/utbetald\s*nett[oö]lön|^990\b/i.test(text)) return "net";
   if (/sjuk|karens|semester|komp|frånvaro|föräldra|vab|ledighet|sparad/i.test(text)) return "absence";
+  if (/skatt|utmätning|nettolöneavdrag|löneavdrag|öresutjämning/i.test(text)) return "tax";
   if (/utlägg|ersättning|bilersättning|km-ers|rese|traktamente|milersättning/i.test(text)) return "reimbursement";
   if (/lön|arvode|ob-|ob |övertid|beredskap|jour|tillägg|timlön|månadslön/i.test(text)) return "pay";
   return "other";
