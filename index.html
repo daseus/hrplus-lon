@@ -1846,9 +1846,9 @@
     function categorizeRow(payCode, description) {
       const text = `${payCode} ${description}`;
       if (TECHNICAL_PATTERNS.some((pattern) => pattern.test(text))) return "technical";
-      if (/nettolön/i.test(text)) return "net";
-      if (/skatt|utmätning|avdrag|öresutjämning/i.test(text)) return "tax";
+      if (/utbetald\s*nett[oö]lön|^990\b/i.test(text)) return "net";
       if (/sjuk|karens|semester|komp|frånvaro|föräldra|vab|ledighet|sparad/i.test(text)) return "absence";
+      if (/skatt|utmätning|nettolöneavdrag|löneavdrag|öresutjämning/i.test(text)) return "tax";
       if (/utlägg|ersättning|bilersättning|km-ers|rese|traktamente|milersättning/i.test(text)) return "reimbursement";
       if (/lön|arvode|ob-|ob |övertid|beredskap|jour|tillägg|timlön|månadslön/i.test(text)) return "pay";
       return "other";
@@ -1863,7 +1863,7 @@
     function isPayrollNetPayRow(row) {
       const payCode = cleanText(row && row.payCode).toLowerCase();
       const description = cleanText(row && row.description).toLowerCase();
-      return /^990\b/.test(payCode) || /utbetald\s*nett|nett[oö]lön/.test(description);
+      return /^990\b/.test(payCode) || /utbetald\s*nett[oö]lön/.test(description);
     }
 
     function isPayrollSummaryRow(row) {
@@ -2303,7 +2303,46 @@
 
     function getReportRows(employee) {
       const rows = getVisibleRows(employee);
-      return state.mergeSplits ? mergeCostSplitRows(rows) : rows;
+      const reportRows = state.mergeSplits ? mergeCostSplitRows(rows) : rows;
+      return addPayrollReconciliationRows(reportRows);
+    }
+
+    function addPayrollReconciliationRows(rows) {
+      const sourceKey = state.metadata ? state.metadata.sourceKey : "";
+      if (sourceKey !== "payrollDraftI") return rows;
+      if (rows.some((row) => row.isDerived)) return rows;
+
+      const gross = sum(rows.filter((row) => isPayrollGrossRow(row)), "amount");
+      const netPay = Math.abs(sum(rows.filter((row) => isPayrollNetPayRow(row)), "amount"));
+      if (!gross || !netPay) return rows;
+
+      const tax = sum(rows.filter((row) => row.category === "tax" && !isPayrollSummaryRow(row)), "amount");
+      const hiddenNetDeduction = roundCurrency(netPay - (gross + tax));
+      if (hiddenNetDeduction >= -500) return rows;
+
+      const baseRow = rows.find((row) => !isPayrollSummaryRow(row)) || rows[0] || {};
+      return [
+        ...rows,
+        {
+          ...baseRow,
+          original: null,
+          payCode: "avst",
+          description: "Beräknat nettoavdrag/utmätning",
+          unitPrice: 0,
+          hours: 0,
+          calendarDays: 0,
+          workDays: 0,
+          amount: hiddenNetDeduction,
+          fromDate: "",
+          toDate: "",
+          scope: 0,
+          account: "Avstämt mot nettolön",
+          costParts: [],
+          category: "tax",
+          isTechnical: false,
+          isDerived: true
+        }
+      ];
     }
 
     function mergeCostSplitRows(rows) {
@@ -2574,6 +2613,10 @@
 
     function sum(rows, field) {
       return rows.reduce((total, row) => total + (Number(row[field]) || 0), 0);
+    }
+
+    function roundCurrency(value) {
+      return Math.round((Number(value) || 0) * 100) / 100;
     }
 
     function escapeHtml(value) {
