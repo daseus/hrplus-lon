@@ -67,29 +67,58 @@ if ($styleMatch.Success) {
 }
 
 $scriptMatch = [regex]::Match($html, "(?s)<script>\s*(?<js>const APP_INFO[\s\S]*?)\s*</script>")
-if ($scriptMatch.Success) {
-  $js = $scriptMatch.Groups["js"].Value.Trim()
-  $jsVersion = Get-ShortHash $js
-  [System.IO.File]::WriteAllText((Join-Path $distFull "assets\app.js"), $js, $utf8)
-  $html = $html.Remove($scriptMatch.Index, $scriptMatch.Length).Insert($scriptMatch.Index, "<script src=`"assets/app.js?v=$jsVersion`"></script>")
+if (-not $scriptMatch.Success) {
+  throw "Could not find the application script in index.html."
 }
+
+$js = $scriptMatch.Groups["js"].Value.Trim()
+$jsVersion = Get-ShortHash $js
+$appVersionMatch = [regex]::Match($js, 'version:\s*"(?<version>[^"]+)"')
+if (-not $appVersionMatch.Success) {
+  throw "Could not find APP_INFO.version in index.html."
+}
+$appVersion = $appVersionMatch.Groups["version"].Value
+[System.IO.File]::WriteAllText((Join-Path $distFull "assets\app.js"), $js, $utf8)
+$html = $html.Remove($scriptMatch.Index, $scriptMatch.Length).Insert($scriptMatch.Index, "<script src=`"assets/app.js?v=$jsVersion`"></script>")
 
 $html = $html -replace "(\r?\n){3,}", "`r`n`r`n"
 
 [System.IO.File]::WriteAllText((Join-Path $distFull "index.html"), $html, $utf8)
 Copy-Item -LiteralPath $sourceVendor -Destination (Join-Path $distFull "vendor\xlsx.full.min.js") -Force
 
+$release = [ordered]@{
+  version = $appVersion
+  build = $jsVersion
+}
+$releaseJson = $release | ConvertTo-Json
+[System.IO.File]::WriteAllText((Join-Path $distFull "version.json"), $releaseJson, $utf8)
+
  $headers = @"
 /*
-  Cache-Control: no-cache, no-store, must-revalidate
-  Pragma: no-cache
-  Expires: 0
   X-Content-Type-Options: nosniff
   Referrer-Policy: no-referrer
   Permissions-Policy: camera=(), microphone=(), geolocation=()
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'
 
+/
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
+
+/index.html
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
+
+/version.json
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
+
 /assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/vendor/*
   Cache-Control: public, max-age=31536000, immutable
 "@
 

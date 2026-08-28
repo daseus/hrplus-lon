@@ -1,6 +1,6 @@
 const APP_INFO = {
       name: "Löneunderlagsgranskare HR+",
-      version: "1.1.0",
+      version: "1.1.1",
       author: "David Campbell",
       contact: "david.campbell@svenskakyrkan.se"
     };
@@ -91,7 +91,9 @@ const APP_INFO = {
       mergeSplits: true,
       onlyWithRows: true,
       query: "",
-      metadata: null
+      metadata: null,
+      availableVersion: "",
+      lastUpdateCheck: 0
     };
 
     const els = {
@@ -124,7 +126,9 @@ const APP_INFO = {
       warningDialog: document.getElementById("warningDialog"),
       warningText: document.getElementById("warningText"),
       warningTitle: document.getElementById("warningTitle"),
-      closeWarningButton: document.getElementById("closeWarningButton")
+      closeWarningButton: document.getElementById("closeWarningButton"),
+      updateNotice: document.getElementById("updateNotice"),
+      updateButton: document.getElementById("updateButton")
     };
 
     const helpTabs = Array.from(document.querySelectorAll(".help-tab"));
@@ -182,8 +186,14 @@ const APP_INFO = {
     els.warningDialog.addEventListener("click", (event) => {
       if (event.target === els.warningDialog) closeWarning();
     });
+    els.updateButton.addEventListener("click", () => openAvailableVersion(state.availableVersion));
+    window.addEventListener("focus", () => checkForUpdate());
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") checkForUpdate();
+    });
 
     initializeStaticText();
+    checkForUpdate(true);
 
     async function handleFileChange(event) {
       const file = event.target.files && event.target.files[0];
@@ -1304,6 +1314,47 @@ const APP_INFO = {
     function initializeStaticText() {
       els.aboutText.textContent = `${APP_INFO.name} version ${APP_INFO.version}. Programmet är framtaget av ${APP_INFO.author}.`;
       els.contactText.textContent = APP_INFO.contact;
+    }
+
+    async function checkForUpdate(force = false) {
+      const now = Date.now();
+      if (!force && now - state.lastUpdateCheck < 60000) return;
+      state.lastUpdateCheck = now;
+
+      try {
+        const response = await fetch(`version.json?check=${now}`, { cache: "no-store" });
+        if (!response.ok) return;
+        const release = await response.json();
+        const availableVersion = cleanText(release && release.version);
+        if (!isNewerVersion(availableVersion, APP_INFO.version)) return;
+
+        state.availableVersion = availableVersion;
+        if (!state.rows.length && document.visibilityState !== "hidden") {
+          openAvailableVersion(availableVersion);
+          return;
+        }
+        els.updateNotice.classList.remove("hidden");
+      } catch {
+        // Local/offline use remains available when the release file cannot be reached.
+      }
+    }
+
+    function isNewerVersion(candidate, current) {
+      const candidateParts = String(candidate).split(".").map((part) => Number.parseInt(part, 10) || 0);
+      const currentParts = String(current).split(".").map((part) => Number.parseInt(part, 10) || 0);
+      const length = Math.max(candidateParts.length, currentParts.length);
+      for (let index = 0; index < length; index += 1) {
+        const difference = (candidateParts[index] || 0) - (currentParts[index] || 0);
+        if (difference !== 0) return difference > 0;
+      }
+      return false;
+    }
+
+    function openAvailableVersion(version) {
+      if (!version) return;
+      const url = new URL(window.location.href);
+      url.searchParams.set("version", version);
+      window.location.replace(url.toString());
     }
 
     function openHelp() {

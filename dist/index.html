@@ -19,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Löneunderlagsgranskare</title>
   <script src="vendor/xlsx.full.min.js?v=cc015130aa85"></script>
-  <link rel="stylesheet" href="assets/app.css?v=10842f88a6d5">
+  <link rel="stylesheet" href="assets/app.css?v=46a0bb852efe">
 </head>
 <body>
   <div class="app">
@@ -108,11 +108,16 @@
     </div>
   </div>
 
+  <aside id="updateNotice" class="update-notice hidden" role="status" aria-live="polite">
+    <p>En ny version av verktyget finns tillgänglig.</p>
+    <button id="updateButton" type="button">Uppdatera nu</button>
+  </aside>
+
   <dialog id="helpDialog" class="help-dialog" aria-labelledby="helpTitle">
     <div class="help-header">
       <div>
         <h2 id="helpTitle">Hjälp och information</h2>
-        <p>Löneunderlagsgranskare <span class="version-chip">v1.1.0</span></p>
+        <p>Löneunderlagsgranskare <span class="version-chip">v1.1.1</span></p>
       </div>
       <button id="closeHelpButton" type="button" aria-label="Stäng hjälp">Stäng</button>
     </div>
@@ -187,6 +192,10 @@
           <h3>Nyheter och versionshistorik</h3>
           <p class="help-lead">Kort sammanfattning av förändringar som påverkar användningen.</p>
           <article class="changelog-entry">
+            <h4>Version 1.1.1 · 2026-08-28</h4>
+            <p>Verktyget söker nu efter nya versioner när sidan öppnas eller återaktiveras. En tom sida uppdateras automatiskt; pågående granskning skyddas och får i stället en tydlig uppdateringsknapp.</p>
+          </article>
+          <article class="changelog-entry">
             <h4>Version 1.1.0 · 2026-08-28</h4>
             <p>Nytt visuellt uttryck, tydligare hjälp med flikar och versionshistorik. Löneunderlag visar nu alla verkliga personrader; filtret för arbetsgivaravgifter och bokföringspåslag används bara för Bokföringsposter.</p>
           </article>
@@ -221,6 +230,6 @@
     </div>
   </dialog>
 
-  <script src="assets/app.js?v=5f03f1370048"></script>
+  <script src="assets/app.js?v=ab554303ebe4"></script>
 </body>
 </html>
