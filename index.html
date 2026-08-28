@@ -253,6 +253,19 @@
       font-size: 13px;
     }
 
+    .actions .version-button {
+      min-width: 0;
+      padding: 5px 8px;
+      border-color: transparent;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      box-shadow: none;
+    }
+
     .help-dialog {
       width: min(880px, calc(100vw - 32px));
       max-height: min(760px, calc(100vh - 32px));
@@ -1329,6 +1342,7 @@
         <button id="printButton" type="button" disabled>Skriv ut</button>
         <button id="printAllButton" class="primary" type="button" disabled>Skriv ut alla</button>
         <button id="helpButton" class="subtle" type="button">Hjälp</button>
+        <button id="versionButton" class="version-button" type="button" aria-label="Öppna versionshistorik">v1.1.2</button>
       </div>
     </header>
 
@@ -1387,7 +1401,7 @@
     <div class="help-header">
       <div>
         <h2 id="helpTitle">Hjälp och information</h2>
-        <p>Löneunderlagsgranskare <span class="version-chip">v1.1.1</span></p>
+        <p>Löneunderlagsgranskare <span class="version-chip">v1.1.2</span></p>
       </div>
       <button id="closeHelpButton" type="button" aria-label="Stäng hjälp">Stäng</button>
     </div>
@@ -1462,6 +1476,10 @@
           <h3>Nyheter och versionshistorik</h3>
           <p class="help-lead">Kort sammanfattning av förändringar som påverkar användningen.</p>
           <article class="changelog-entry">
+            <h4>Version 1.1.2 · 2026-08-28</h4>
+            <p>Versionsnumret visas nu direkt i sidhuvudet. Klicka på det för att öppna versionshistoriken.</p>
+          </article>
+          <article class="changelog-entry">
             <h4>Version 1.1.1 · 2026-08-28</h4>
             <p>Verktyget söker nu efter nya versioner när sidan öppnas eller återaktiveras. En tom sida uppdateras automatiskt; pågående granskning skyddas och får i stället en tydlig uppdateringsknapp.</p>
           </article>
@@ -1503,7 +1521,7 @@
   <script>
     const APP_INFO = {
       name: "Löneunderlagsgranskare HR+",
-      version: "1.1.1",
+      version: "1.1.2",
       author: "David Campbell",
       contact: "david.campbell@svenskakyrkan.se"
     };
@@ -1622,6 +1640,7 @@
       nextButton: document.getElementById("nextButton"),
       pagerStatus: document.getElementById("pagerStatus"),
       helpButton: document.getElementById("helpButton"),
+      versionButton: document.getElementById("versionButton"),
       helpDialog: document.getElementById("helpDialog"),
       closeHelpButton: document.getElementById("closeHelpButton"),
       aboutText: document.getElementById("aboutText"),
@@ -1670,7 +1689,8 @@
     });
     els.previousButton.addEventListener("click", () => selectRelativeEmployee(-1));
     els.nextButton.addEventListener("click", () => selectRelativeEmployee(1));
-    els.helpButton.addEventListener("click", openHelp);
+    els.helpButton.addEventListener("click", () => openHelp());
+    els.versionButton.addEventListener("click", () => openHelp("helpTabNews"));
     els.closeHelpButton.addEventListener("click", closeHelp);
     helpTabs.forEach((tab, index) => {
       tab.addEventListener("click", () => selectHelpTab(tab.id));
@@ -2860,8 +2880,8 @@
       window.location.replace(url.toString());
     }
 
-    function openHelp() {
-      selectHelpTab("helpTabStart", false);
+    function openHelp(tabId = "helpTabStart") {
+      selectHelpTab(tabId, false);
       if (typeof els.helpDialog.showModal === "function") {
         els.helpDialog.showModal();
       } else {

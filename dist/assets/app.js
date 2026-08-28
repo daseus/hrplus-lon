@@ -1,6 +1,6 @@
 const APP_INFO = {
       name: "Löneunderlagsgranskare HR+",
-      version: "1.1.1",
+      version: "1.1.2",
       author: "David Campbell",
       contact: "david.campbell@svenskakyrkan.se"
     };
@@ -119,6 +119,7 @@ const APP_INFO = {
       nextButton: document.getElementById("nextButton"),
       pagerStatus: document.getElementById("pagerStatus"),
       helpButton: document.getElementById("helpButton"),
+      versionButton: document.getElementById("versionButton"),
       helpDialog: document.getElementById("helpDialog"),
       closeHelpButton: document.getElementById("closeHelpButton"),
       aboutText: document.getElementById("aboutText"),
@@ -167,7 +168,8 @@ const APP_INFO = {
     });
     els.previousButton.addEventListener("click", () => selectRelativeEmployee(-1));
     els.nextButton.addEventListener("click", () => selectRelativeEmployee(1));
-    els.helpButton.addEventListener("click", openHelp);
+    els.helpButton.addEventListener("click", () => openHelp());
+    els.versionButton.addEventListener("click", () => openHelp("helpTabNews"));
     els.closeHelpButton.addEventListener("click", closeHelp);
     helpTabs.forEach((tab, index) => {
       tab.addEventListener("click", () => selectHelpTab(tab.id));
@@ -1357,8 +1359,8 @@ const APP_INFO = {
       window.location.replace(url.toString());
     }
 
-    function openHelp() {
-      selectHelpTab("helpTabStart", false);
+    function openHelp(tabId = "helpTabStart") {
+      selectHelpTab(tabId, false);
       if (typeof els.helpDialog.showModal === "function") {
         els.helpDialog.showModal();
       } else {

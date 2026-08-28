@@ -19,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Löneunderlagsgranskare</title>
   <script src="vendor/xlsx.full.min.js?v=cc015130aa85"></script>
-  <link rel="stylesheet" href="assets/app.css?v=46a0bb852efe">
+  <link rel="stylesheet" href="assets/app.css?v=54bd6d84bde3">
 </head>
 <body>
   <div class="app">
@@ -59,6 +59,7 @@
         <button id="printButton" type="button" disabled>Skriv ut</button>
         <button id="printAllButton" class="primary" type="button" disabled>Skriv ut alla</button>
         <button id="helpButton" class="subtle" type="button">Hjälp</button>
+        <button id="versionButton" class="version-button" type="button" aria-label="Öppna versionshistorik">v1.1.2</button>
       </div>
     </header>
 
@@ -117,7 +118,7 @@
     <div class="help-header">
       <div>
         <h2 id="helpTitle">Hjälp och information</h2>
-        <p>Löneunderlagsgranskare <span class="version-chip">v1.1.1</span></p>
+        <p>Löneunderlagsgranskare <span class="version-chip">v1.1.2</span></p>
       </div>
       <button id="closeHelpButton" type="button" aria-label="Stäng hjälp">Stäng</button>
     </div>
@@ -192,6 +193,10 @@
           <h3>Nyheter och versionshistorik</h3>
           <p class="help-lead">Kort sammanfattning av förändringar som påverkar användningen.</p>
           <article class="changelog-entry">
+            <h4>Version 1.1.2 · 2026-08-28</h4>
+            <p>Versionsnumret visas nu direkt i sidhuvudet. Klicka på det för att öppna versionshistoriken.</p>
+          </article>
+          <article class="changelog-entry">
             <h4>Version 1.1.1 · 2026-08-28</h4>
             <p>Verktyget söker nu efter nya versioner när sidan öppnas eller återaktiveras. En tom sida uppdateras automatiskt; pågående granskning skyddas och får i stället en tydlig uppdateringsknapp.</p>
           </article>
@@ -230,6 +235,6 @@
     </div>
   </dialog>
 
-  <script src="assets/app.js?v=ab554303ebe4"></script>
+  <script src="assets/app.js?v=9852baad5195"></script>
 </body>
 </html>
