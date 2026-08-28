@@ -2,6 +2,8 @@
 
 Ett webbaserat granskningsverktyg för Excel-exporter från Hr+.
 
+Aktuell version: **1.1.0**
+
 Publicerad version: <https://hrlon.lerumsforsamling.se>
 
 ## Kort om verktyget

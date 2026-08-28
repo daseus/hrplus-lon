@@ -1,6 +1,6 @@
 const APP_INFO = {
       name: "Löneunderlagsgranskare HR+",
-      version: "1.0",
+      version: "1.1.0",
       author: "David Campbell",
       contact: "david.campbell@svenskakyrkan.se"
     };
@@ -98,6 +98,7 @@ const APP_INFO = {
       fileInput: document.getElementById("fileInput"),
       searchInput: document.getElementById("searchInput"),
       showTechnicalInput: document.getElementById("showTechnicalInput"),
+      technicalToggleRow: document.getElementById("technicalToggleRow"),
       mergeSplitsInput: document.getElementById("mergeSplitsInput"),
       onlyWithRowsInput: document.getElementById("onlyWithRowsInput"),
       status: document.getElementById("status"),
@@ -125,6 +126,9 @@ const APP_INFO = {
       warningTitle: document.getElementById("warningTitle"),
       closeWarningButton: document.getElementById("closeWarningButton")
     };
+
+    const helpTabs = Array.from(document.querySelectorAll(".help-tab"));
+    const helpPanels = Array.from(document.querySelectorAll(".help-panel"));
 
     els.fileInput.addEventListener("change", handleFileChange);
     els.searchInput.addEventListener("input", () => {
@@ -161,6 +165,16 @@ const APP_INFO = {
     els.nextButton.addEventListener("click", () => selectRelativeEmployee(1));
     els.helpButton.addEventListener("click", openHelp);
     els.closeHelpButton.addEventListener("click", closeHelp);
+    helpTabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => selectHelpTab(tab.id));
+      tab.addEventListener("keydown", (event) => {
+        if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
+        event.preventDefault();
+        const direction = event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1 : -1;
+        const nextTab = helpTabs[(index + direction + helpTabs.length) % helpTabs.length];
+        selectHelpTab(nextTab.id);
+      });
+    });
     els.helpDialog.addEventListener("click", (event) => {
       if (event.target === els.helpDialog) closeHelp();
     });
@@ -574,7 +588,8 @@ const APP_INFO = {
       const description = getText(raw, "description");
       const payCode = getText(raw, "payCode");
       const amount = getNumber(raw, "amount");
-      const category = categorizeRow(payCode, description);
+      const sourceType = cleanText(raw && raw.__sourceType);
+      const category = categorizeRow(payCode, description, sourceType);
 
       return {
         original: raw,
@@ -708,9 +723,9 @@ const APP_INFO = {
       return dates[0] === dates[dates.length - 1] ? dates[0] : `${dates[0]} - ${dates[dates.length - 1]}`;
     }
 
-    function categorizeRow(payCode, description) {
+    function categorizeRow(payCode, description, sourceType = "") {
       const text = `${payCode} ${description}`;
-      if (TECHNICAL_PATTERNS.some((pattern) => pattern.test(text))) return "technical";
+      if (sourceType === "accounting" && TECHNICAL_PATTERNS.some((pattern) => pattern.test(text))) return "technical";
       if (/utbetald\s*nett[oö]lön|^990\b/i.test(text)) return "net";
       if (/sjuk|karens|semester|komp|frånvaro|föräldra|vab|ledighet|sparad/i.test(text)) return "absence";
       if (/skatt|utmätning|nettolöneavdrag|löneavdrag|öresutjämning/i.test(text)) return "tax";
@@ -897,6 +912,10 @@ const APP_INFO = {
     }
 
     function renderReportToolbar(title, detail) {
+      const hasTechnicalRows = state.rows.some((row) => row.isTechnical);
+      const visibilityLabel = hasTechnicalRows
+        ? (state.showTechnical ? "Alla rader visas" : "Bokföringspåslag dolda")
+        : "Alla lönerader visas";
       return `
         <div class="report-toolbar">
           <div>
@@ -904,7 +923,7 @@ const APP_INFO = {
             <span>${escapeHtml(detail)}</span>
           </div>
           <div class="actions">
-            <span class="tag">${state.showTechnical ? "Alla rader" : "Tekniska rader dolda"}</span>
+            <span class="tag">${visibilityLabel}</span>
           </div>
         </div>
       `;
@@ -1144,14 +1163,15 @@ const APP_INFO = {
       els.sortSelect.value = state.sortBy;
       els.mergeSplitsInput.checked = state.mergeSplits;
       const hasTechnicalRows = state.rows.some((row) => row.isTechnical);
+      els.technicalToggleRow.classList.toggle("hidden", !hasTechnicalRows);
       if (!hasTechnicalRows) {
         state.showTechnical = false;
         els.showTechnicalInput.checked = false;
       }
       els.showTechnicalInput.disabled = !enabled || !hasTechnicalRows;
       els.showTechnicalInput.parentElement.title = hasTechnicalRows
-        ? "Visar eller döljer arbetsgivaravgifter, pensions-/försäkringsrader och andra bokföringsrader."
-        : "Den importerade filen innehåller inga tekniska/bokföringsrader att visa.";
+        ? "Visar eller döljer arbetsgivaravgifter, pensions-/försäkringsrader och andra bokföringspåslag."
+        : "Det här underlaget innehåller inga separata bokföringspåslag.";
       els.pagerStatus.textContent = employees.length
         ? `${selectedIndex + 1 || 1} av ${employees.length}`
         : "0 av 0";
@@ -1287,10 +1307,25 @@ const APP_INFO = {
     }
 
     function openHelp() {
+      selectHelpTab("helpTabStart", false);
       if (typeof els.helpDialog.showModal === "function") {
         els.helpDialog.showModal();
       } else {
         showWarning(`${APP_INFO.name}\n\nBokförd löneunderlagslista: Ekonomirutin > Bokföringsposter > Mer > Export > Kalkylprogram.\nLöneunderlag från I: (preliminärt löneunderlag): Ekonomirutin > Löneunderlagslista > Mer > Export > Kalkylprogram.\n\nKontakt: ${APP_INFO.contact}`, "Information");
+      }
+    }
+
+    function selectHelpTab(tabId, focus = true) {
+      for (const tab of helpTabs) {
+        const isSelected = tab.id === tabId;
+        tab.setAttribute("aria-selected", String(isSelected));
+        tab.tabIndex = isSelected ? 0 : -1;
+        if (isSelected && focus) tab.focus();
+      }
+
+      for (const panel of helpPanels) {
+        const selectedTab = helpTabs.find((tab) => tab.getAttribute("aria-controls") === panel.id);
+        panel.hidden = !selectedTab || selectedTab.id !== tabId;
       }
     }
 

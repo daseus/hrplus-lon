@@ -19,7 +19,7 @@ Efter push bygger Cloudflare den publicerade versionen från `dist`.
 
 ## Varför inte behövs hård uppdatering
 
-`dist/index.html` länkar till `app.css` och `app.js` med versions-parametrar (`?v=...`) som byggaren räknar fram från innehållet.
+`dist/index.html` länkar till `app.css`, `app.js` och Excel-biblioteket med versions-parametrar (`?v=...`) som byggaren räknar fram från innehållet.
 
 Det gör att webbläsaren får nya resurser när innehållet ändrats, även om statiska filer finns cache:ade.
 

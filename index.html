@@ -8,20 +8,26 @@
   <style>
     :root {
       color-scheme: light;
-      --bg: #f6f7f4;
+      --bg: #f4f7f6;
       --panel: #ffffff;
-      --ink: #1e2528;
-      --muted: #687175;
-      --line: #d9dfdd;
-      --line-strong: #aeb8b4;
-      --accent: #1f6f67;
-      --accent-strong: #124c47;
-      --accent-soft: #e3f1ee;
-      --warn: #9b3d20;
-      --warn-soft: #f8e7df;
+      --panel-soft: #f8fbfa;
+      --ink: #172321;
+      --muted: #5f6f6c;
+      --line: #d8e2df;
+      --line-strong: #a8bbb6;
+      --accent: #176b61;
+      --accent-strong: #0d5149;
+      --accent-soft: #dff2ee;
+      --accent-softer: #eef8f6;
+      --warn: #a23b24;
+      --warn-soft: #fcebe5;
       --ok: #236531;
-      --shadow: 0 12px 28px rgba(31, 46, 44, 0.08);
-      font-family: Arial, Helvetica, sans-serif;
+      --shadow-sm: 0 1px 2px rgba(18, 48, 43, 0.08), 0 2px 8px rgba(18, 48, 43, 0.05);
+      --shadow: 0 12px 32px rgba(18, 48, 43, 0.10);
+      --radius-sm: 8px;
+      --radius: 12px;
+      --radius-lg: 18px;
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
     }
 
     * {
@@ -33,6 +39,8 @@
       min-height: 100vh;
       background: var(--bg);
       color: var(--ink);
+      font-size: 14px;
+      line-height: 1.45;
     }
 
     button,
@@ -45,16 +53,20 @@
       border: 1px solid var(--line-strong);
       background: var(--panel);
       color: var(--ink);
-      border-radius: 6px;
-      padding: 7px 10px;
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
       cursor: pointer;
-      transition: border-color 120ms ease, background-color 120ms ease, color 120ms ease;
+      font-weight: 600;
+      box-shadow: 0 1px 1px rgba(18, 48, 43, 0.04);
+      transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
     }
 
     button:hover,
     button:focus-visible {
       border-color: var(--accent);
       outline: none;
+      background: var(--accent-softer);
+      box-shadow: var(--shadow-sm);
     }
 
     button:disabled {
@@ -66,15 +78,18 @@
       border-color: var(--accent);
       background: var(--accent);
       color: #fff;
+      box-shadow: 0 4px 12px rgba(23, 107, 97, 0.22);
     }
 
     button.primary:hover,
     button.primary:focus-visible {
       background: var(--accent-strong);
+      color: #fff;
+      transform: translateY(-1px);
     }
 
     button.subtle {
-      background: #f7faf9;
+      background: var(--panel-soft);
     }
 
     input[type="search"],
@@ -82,10 +97,29 @@
     select {
       width: 100%;
       border: 1px solid var(--line-strong);
-      border-radius: 6px;
+      border-radius: var(--radius-sm);
       background: #fff;
       color: var(--ink);
-      padding: 7px 9px;
+      padding: 8px 10px;
+      min-height: 39px;
+      transition: border-color 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
+    }
+
+    input[type="file"] {
+      padding: 4px;
+      color: var(--muted);
+    }
+
+    input[type="file"]::file-selector-button {
+      border: 0;
+      border-radius: 6px;
+      padding: 7px 10px;
+      margin-right: 9px;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
     }
 
     input:focus-visible,
@@ -106,9 +140,10 @@
       grid-template-columns: minmax(210px, 0.8fr) minmax(620px, 1.8fr) auto;
       gap: 10px;
       align-items: end;
-      padding: 7px 10px;
-      background: #fff;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.96);
       border-bottom: 1px solid var(--line);
+      box-shadow: 0 1px 10px rgba(18, 48, 43, 0.06);
       position: sticky;
       top: 0;
       z-index: 10;
@@ -117,13 +152,39 @@
     .brand h1 {
       margin: 0;
       font-size: 17px;
-      font-weight: 700;
-      letter-spacing: 0;
+      font-weight: 750;
+      letter-spacing: -0.015em;
       white-space: nowrap;
     }
 
     .brand p {
       display: none;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      border-radius: 11px;
+      background: linear-gradient(145deg, var(--accent), var(--accent-strong));
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      box-shadow: 0 5px 14px rgba(23, 107, 97, 0.22);
+    }
+
+    .brand-copy {
+      min-width: 0;
     }
 
     .file-controls {
@@ -156,10 +217,10 @@
     .metric {
       min-width: 0;
       max-width: none;
-      padding: 4px 6px;
+      padding: 6px 8px;
       border: 1px solid var(--line);
-      border-radius: 6px;
-      background: #fbfcfb;
+      border-radius: var(--radius-sm);
+      background: var(--panel-soft);
       overflow: hidden;
     }
 
@@ -193,16 +254,19 @@
     }
 
     .help-dialog {
-      width: min(720px, calc(100vw - 32px));
-      border: 1px solid var(--line-strong);
-      border-radius: 8px;
+      width: min(880px, calc(100vw - 32px));
+      max-height: min(760px, calc(100vh - 32px));
+      border: 0;
+      border-radius: var(--radius-lg);
       padding: 0;
       color: var(--ink);
-      box-shadow: 0 20px 70px rgba(20, 36, 34, 0.24);
+      box-shadow: 0 28px 90px rgba(20, 36, 34, 0.28);
+      overflow: hidden;
     }
 
     .help-dialog::backdrop {
-      background: rgba(20, 28, 31, 0.38);
+      background: rgba(20, 28, 31, 0.48);
+      backdrop-filter: blur(3px);
     }
 
     .warning-dialog {
@@ -245,14 +309,15 @@
       justify-content: space-between;
       gap: 16px;
       align-items: start;
-      padding: 16px 18px 12px;
+      padding: 18px 22px 14px;
       border-bottom: 1px solid var(--line);
-      background: #fbfcfb;
+      background: linear-gradient(135deg, #f8fcfb, #edf7f5);
     }
 
     .help-header h2 {
       margin: 0;
-      font-size: 20px;
+      font-size: 22px;
+      letter-spacing: -0.02em;
     }
 
     .help-header p {
@@ -262,33 +327,171 @@
     }
 
     .help-body {
-      padding: 16px 18px 18px;
       display: grid;
-      gap: 14px;
+      grid-template-columns: 190px minmax(0, 1fr);
+      min-height: 480px;
+      max-height: calc(100vh - 132px);
+      overflow: hidden;
     }
 
-    .help-body h3 {
+    .help-nav {
+      display: grid;
+      align-content: start;
+      gap: 6px;
+      padding: 18px 12px;
+      border-right: 1px solid var(--line);
+      background: var(--panel-soft);
+    }
+
+    .help-tab {
+      width: 100%;
+      border: 0;
+      box-shadow: none;
+      background: transparent;
+      text-align: left;
+      padding: 10px 12px;
+      color: var(--muted);
+    }
+
+    .help-tab:hover,
+    .help-tab:focus-visible {
+      background: var(--accent-softer);
+      color: var(--accent-strong);
+    }
+
+    .help-tab[aria-selected="true"] {
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      font-weight: 750;
+    }
+
+    .help-panels {
+      overflow: auto;
+      padding: 22px 24px 26px;
+      background: #fff;
+    }
+
+    .help-panel[hidden] {
+      display: none;
+    }
+
+    .help-panel h3 {
       margin: 0 0 6px;
-      font-size: 15px;
+      font-size: 19px;
+      letter-spacing: -0.015em;
     }
 
-    .help-body p,
-    .help-body li {
-      color: #394246;
-      line-height: 1.45;
+    .help-lead {
+      margin: 0 0 18px;
+      color: var(--muted);
       font-size: 14px;
     }
 
-    .help-body p,
-    .help-body ol,
-    .help-body ul {
-      margin-top: 0;
-      margin-bottom: 0;
+    .help-steps {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: help-step;
     }
 
-    .help-body ol,
-    .help-body ul {
-      padding-left: 22px;
+    .help-steps li {
+      position: relative;
+      min-height: 44px;
+      padding: 11px 14px 11px 52px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel-soft);
+      color: #31413e;
+      counter-increment: help-step;
+    }
+
+    .help-steps li::before {
+      content: counter(help-step);
+      position: absolute;
+      left: 14px;
+      top: 10px;
+      display: grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    .help-card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .help-card,
+    .privacy-card,
+    .changelog-entry {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel-soft);
+      padding: 14px 16px;
+    }
+
+    .help-card h4,
+    .privacy-card h4,
+    .changelog-entry h4 {
+      margin: 0 0 6px;
+      font-size: 14px;
+    }
+
+    .help-card p,
+    .privacy-card p,
+    .help-panel li,
+    .changelog-entry p {
+      margin: 0;
+      color: #3f4f4c;
+      line-height: 1.55;
+    }
+
+    .privacy-card {
+      border-left: 4px solid var(--accent);
+      background: var(--accent-softer);
+      margin-bottom: 12px;
+    }
+
+    .help-panel a {
+      color: var(--accent-strong);
+      font-weight: 650;
+    }
+
+    .changelog-entry {
+      position: relative;
+      padding-left: 20px;
+      margin-bottom: 12px;
+    }
+
+    .changelog-entry::before {
+      content: "";
+      position: absolute;
+      left: -5px;
+      top: 18px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-soft);
+    }
+
+    .version-chip {
+      display: inline-flex;
+      margin-left: 6px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      font-size: 11px;
+      font-weight: 800;
     }
 
     @media (max-width: 1280px) {
@@ -333,11 +536,14 @@
       display: grid;
       grid-template-columns: minmax(260px, 330px) 1fr;
       min-height: 0;
+      background:
+        radial-gradient(circle at 75% 5%, rgba(23, 107, 97, 0.055), transparent 28%),
+        var(--bg);
     }
 
     .sidebar {
       border-right: 1px solid var(--line);
-      background: #fbfcfb;
+      background: rgba(255, 255, 255, 0.76);
       min-height: 0;
       display: grid;
       grid-template-rows: auto auto 1fr;
@@ -346,7 +552,7 @@
     .sidebar-tools {
       display: grid;
       gap: 10px;
-      padding: 14px;
+      padding: 16px 14px;
       border-bottom: 1px solid var(--line);
     }
 
@@ -354,9 +560,10 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      color: var(--muted);
+      color: #455552;
       font-size: 13px;
       line-height: 1.35;
+      padding: 3px 2px;
     }
 
     .toggle-row input {
@@ -403,7 +610,7 @@
     .employee-list {
       overflow: auto;
       min-height: 0;
-      padding: 8px;
+      padding: 10px;
     }
 
     .employee-button {
@@ -414,9 +621,10 @@
       text-align: left;
       border: 1px solid transparent;
       background: transparent;
-      padding: 9px 10px;
-      border-radius: 6px;
+      padding: 10px 11px;
+      border-radius: 10px;
       min-height: 56px;
+      box-shadow: none;
     }
 
     .employee-button:hover {
@@ -425,9 +633,10 @@
     }
 
     .employee-button.active {
-      background: var(--accent);
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
       border-color: var(--accent);
       color: #fff;
+      box-shadow: 0 5px 14px rgba(23, 107, 97, 0.18);
     }
 
     .employee-name {
@@ -460,17 +669,33 @@
       min-width: 0;
       min-height: 0;
       overflow: auto;
-      padding: 18px;
+      padding: 24px;
     }
 
     .empty-state {
       max-width: 760px;
       margin: 80px auto;
-      padding: 28px;
+      padding: 34px;
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: var(--radius-lg);
       box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .empty-state::before {
+      content: "XLS";
+      display: grid;
+      place-items: center;
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 18px;
+      border-radius: 16px;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      font-size: 13px;
+      font-weight: 850;
+      letter-spacing: 0.06em;
     }
 
     .empty-state h2 {
@@ -482,6 +707,8 @@
       color: var(--muted);
       line-height: 1.5;
       margin: 0;
+      max-width: 520px;
+      margin-inline: auto;
     }
 
     .person-header {
@@ -495,7 +722,7 @@
     .person-title h2 {
       margin: 0;
       font-size: 24px;
-      letter-spacing: 0;
+      letter-spacing: -0.02em;
     }
 
     .person-title p {
@@ -513,10 +740,11 @@
     .summary-box {
       border: 1px solid var(--line);
       background: #fff;
-      border-radius: 6px;
-      padding: 11px 12px;
+      border-radius: var(--radius);
+      padding: 13px 14px;
       min-height: 74px;
       min-width: 0;
+      box-shadow: var(--shadow-sm);
     }
 
     .summary-box .label {
@@ -529,7 +757,7 @@
     .summary-box .amount {
       display: block;
       margin-top: 8px;
-      font-size: 19px;
+      font-size: 20px;
       font-weight: 700;
       overflow-wrap: anywhere;
     }
@@ -545,8 +773,8 @@
       gap: 4px;
       padding: 3px;
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #eef3f1;
+      border-radius: 10px;
+      background: #edf4f2;
     }
 
     .segmented button {
@@ -586,8 +814,9 @@
       margin-bottom: 14px;
       padding: 10px 12px;
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: var(--radius);
       background: #fff;
+      box-shadow: var(--shadow-sm);
     }
 
     .report-toolbar strong {
@@ -620,8 +849,9 @@
       margin-bottom: 16px;
       background: #fff;
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: var(--radius);
       overflow: hidden;
+      box-shadow: var(--shadow-sm);
     }
 
     .section-heading {
@@ -631,7 +861,7 @@
       justify-content: space-between;
       padding: 10px 12px;
       border-bottom: 1px solid var(--line);
-      background: #fbfcfb;
+      background: linear-gradient(180deg, #fbfdfc, #f5f9f8);
     }
 
     .section-heading h3 {
@@ -668,13 +898,17 @@
 
     th {
       color: var(--muted);
-      background: #fff;
+      background: #fbfdfc;
       font-weight: 700;
       white-space: nowrap;
     }
 
     tr:last-child td {
       border-bottom: 0;
+    }
+
+    tbody tr:hover td {
+      background: var(--accent-softer);
     }
 
     .col-code { width: 29%; }
@@ -713,7 +947,7 @@
       align-items: center;
       min-height: 21px;
       padding: 2px 6px;
-      border-radius: 6px;
+      border-radius: 999px;
       background: var(--accent-soft);
       color: var(--accent-strong);
       font-size: 12px;
@@ -788,6 +1022,42 @@
 
       .report-toolbar {
         display: grid;
+      }
+
+      .help-dialog {
+        width: calc(100vw - 16px);
+        max-height: calc(100vh - 16px);
+      }
+
+      .help-header {
+        padding: 14px 16px 12px;
+      }
+
+      .help-body {
+        grid-template-columns: 1fr;
+        max-height: calc(100vh - 100px);
+      }
+
+      .help-nav {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        padding: 10px 12px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .help-tab {
+        width: auto;
+        white-space: nowrap;
+      }
+
+      .help-panels {
+        padding: 18px 16px 22px;
+      }
+
+      .help-card-grid {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -995,8 +1265,11 @@
   <div class="app">
     <header class="topbar">
       <div class="brand">
-        <h1>Löneunderlagsgranskare HR+</h1>
-        <p>Importera Excel-exporten och granska en anställd åt gången.</p>
+        <div class="brand-mark" aria-hidden="true">HR+</div>
+        <div class="brand-copy">
+          <h1>Löneunderlagsgranskare</h1>
+          <p>Importera Excel-exporten och granska en anställd åt gången.</p>
+        </div>
       </div>
       <div class="file-controls">
         <label class="file-field">
@@ -1049,9 +1322,9 @@
               <button id="nextButton" type="button" disabled>›</button>
             </div>
           </div>
-          <label class="toggle-row">
+          <label id="technicalToggleRow" class="toggle-row hidden">
             <input id="showTechnicalInput" type="checkbox" disabled>
-            Visa tekniska/bokföringsrader
+            Visa arbetsgivaravgifter, pensioner och bokföringspåslag
           </label>
           <label class="toggle-row">
             <input id="mergeSplitsInput" type="checkbox" checked disabled>
@@ -1079,44 +1352,100 @@
     <div class="help-header">
       <div>
         <h2 id="helpTitle">Hjälp och information</h2>
-        <p>Löneunderlagsgranskare HR+</p>
+        <p>Löneunderlagsgranskare <span class="version-chip">v1.1.0</span></p>
       </div>
       <button id="closeHelpButton" type="button" aria-label="Stäng hjälp">Stäng</button>
     </div>
     <div class="help-body">
-      <section>
-        <h3>Så använder du verktyget</h3>
-        <ol>
-          <li>För att granska bokförd löneunderlagslista när månaden är klar: hämta exporten via <strong>Ekonomirutin → Bokföringsposter → Mer → Export</strong>. Välj formatet <strong>Kalkylprogram</strong>.</li>
-          <li>För att granska transaktioner när löneservice har börjat arbeta med lönerna: gå till <strong>Rapporter &amp; Dokument</strong>, sök efter <strong>Transaktionslista</strong>, öppna rapporten och välj <strong>Spara som Excel</strong>.</li>
-          <li>För att granska lönepåverkande poster och beräkningsunderlag för en särskild period: hämta exporten via <strong>Ekonomirutin → Löneunderlagslista → Mer → Export</strong>. Välj formatet <strong>Kalkylprogram</strong>.</li>
-          <li>Importera den exporterade filen via <strong>Importera underlag</strong>.</li>
-          <li>Välj en anställd i listan, sök på namn/anst.nr/löneart eller växla till <strong>Alla</strong>.</li>
-          <li>Använd <strong>Slå ihop kostnadsdelade rader</strong> för en mer läsbar vy där samma löneart och period summeras över kontodelar.</li>
-          <li>Använd <strong>Skriv ut</strong> för aktuell vy eller <strong>Skriv ut alla</strong> för hela rapporten. Välj <strong>Spara som PDF</strong> i utskriftsdialogen om du vill skapa en PDF.</li>
-        </ol>
-      </section>
-      <section>
-        <h3>Underlagstyper</h3>
-        <p><strong>Bokföringsposter</strong> används för att granska bokförd löneunderlagslista när underlaget är klart för månaden.</p>
-        <p><strong>Transaktionslista</strong> visar lönearter, preliminärskatt och utbetald nettolön när löneservice har börjat arbeta med lönerna. Den kan ge bättre inblick än löneunderlagslistan, men behöver inte betyda att månaden är helt färdig.</p>
-        <p><strong>Löneunderlagslista (Hr+)</strong> från <strong>Ekonomirutin → Löneunderlagslista</strong> visar registrerade lönepåverkande poster för vald period.</p>
-        <p><strong>Löneunderlag från I:</strong> Detta är filen vi får från löneservice på I:.</p>
-      </section>
-      <section>
-        <h3>Dataskydd</h3>
-        <p>Importerade Excel-filer behandlas enbart lokalt i din webbläsare. Ingen information från den valda filen, inklusive löneuppgifter, skickas vidare till någon server.</p>
-        <p>Vid besök på sidan hämtas bara appens filer (HTML/CSS/JS och bibliotek) från vår webbplats; inget filinnehåll från din dator skickas iväg.</p>
-        <p>Källkoden är öppen för granskning på <a href="https://github.com/daseus/hrplus-lon" rel="noopener">github.com/daseus/hrplus-lon</a>.</p>
-      </section>
-      <section>
-        <h3>Om programmet</h3>
-        <p id="aboutText"></p>
-      </section>
-      <section>
-        <h3>Kontakt</h3>
-        <p id="contactText"></p>
-      </section>
+      <nav class="help-nav" role="tablist" aria-label="Hjälpavsnitt">
+        <button class="help-tab" id="helpTabStart" type="button" role="tab" aria-selected="true" aria-controls="helpPanelStart">Kom igång</button>
+        <button class="help-tab" id="helpTabSources" type="button" role="tab" aria-selected="false" aria-controls="helpPanelSources" tabindex="-1">Underlag</button>
+        <button class="help-tab" id="helpTabPrivacy" type="button" role="tab" aria-selected="false" aria-controls="helpPanelPrivacy" tabindex="-1">Dataskydd</button>
+        <button class="help-tab" id="helpTabNews" type="button" role="tab" aria-selected="false" aria-controls="helpPanelNews" tabindex="-1">Nyheter &amp; om</button>
+      </nav>
+      <div class="help-panels">
+        <section class="help-panel" id="helpPanelStart" role="tabpanel" aria-labelledby="helpTabStart">
+          <h3>Kom igång</h3>
+          <p class="help-lead">Från Excel-export till en läsbar kontroll per anställd.</p>
+          <ol class="help-steps">
+            <li>Hämta rätt export i HR+ eller från löneservice. Se fliken <strong>Underlag</strong> om du är osäker.</li>
+            <li>Välj filen under <strong>Importera underlag</strong>. Filen behandlas bara lokalt i webbläsaren.</li>
+            <li>Välj en person, sök på namn/anst.nr/löneart eller växla till <strong>Alla</strong>.</li>
+            <li>Låt <strong>Slå ihop kostnadsdelade rader</strong> vara aktiv för en kompakt vy. Stäng av den när varje källrad behöver granskas separat.</li>
+            <li>Använd <strong>Skriv ut</strong> för aktuell person eller <strong>Skriv ut alla</strong>. Välj <strong>Spara som PDF</strong> i utskriftsdialogen vid behov.</li>
+          </ol>
+        </section>
+
+        <section class="help-panel" id="helpPanelSources" role="tabpanel" aria-labelledby="helpTabSources" hidden>
+          <h3>Vilket underlag ska jag välja?</h3>
+          <p class="help-lead">Välj efter var i löneprocessen kontrollen sker.</p>
+          <div class="help-card-grid">
+            <article class="help-card">
+              <h4>Bokföringsposter</h4>
+              <p>För den bokförda lönen när månaden är klar. Hämta via <strong>Ekonomirutin → Bokföringsposter → Mer → Export → Kalkylprogram</strong>.</p>
+            </article>
+            <article class="help-card">
+              <h4>Transaktionslista</h4>
+              <p>Visar lönearter, skatt och nettolön när löneservice har börjat arbeta. Hämta via <strong>Rapporter &amp; Dokument → Transaktionslista → Spara som Excel</strong>.</p>
+            </article>
+            <article class="help-card">
+              <h4>Löneunderlagslista (HR+)</h4>
+              <p>För registrerade lönepåverkande poster under vald period. Hämta via <strong>Ekonomirutin → Löneunderlagslista → Mer → Export → Kalkylprogram</strong>.</p>
+            </article>
+            <article class="help-card">
+              <h4>Löneunderlag från I:</h4>
+              <p>Filen som kommer från löneservice på I:. Den kan innehålla preliminära beräkningar och avstämningsrader.</p>
+            </article>
+          </div>
+          <div class="privacy-card" style="margin-top: 14px;">
+            <h4>Om bokföringsrader</h4>
+            <p>I Bokföringsposter döljs arbetsgivaravgifter, pensionspremier och andra bokföringspåslag som standard. De kan visas med reglaget i sidopanelen.</p>
+          </div>
+        </section>
+
+        <section class="help-panel" id="helpPanelPrivacy" role="tabpanel" aria-labelledby="helpTabPrivacy" hidden>
+          <h3>Dataskydd</h3>
+          <p class="help-lead">Lönefilen stannar i den webbläsare där du öppnar den.</p>
+          <div class="privacy-card">
+            <h4>Ingen uppladdning</h4>
+            <p>Importerade Excel-filer behandlas enbart lokalt. Löneuppgifter och annat innehåll skickas inte till någon server.</p>
+          </div>
+          <div class="help-card-grid">
+            <article class="help-card">
+              <h4>Det som hämtas</h4>
+              <p>Webbläsaren hämtar bara appens HTML, CSS, JavaScript och det lokala Excel-biblioteket från webbplatsen.</p>
+            </article>
+            <article class="help-card">
+              <h4>Ditt ansvar</h4>
+              <p>Skydda skärmen och hantera sparade PDF-filer som andra lönehandlingar. Stäng fliken när granskningen är klar.</p>
+            </article>
+          </div>
+          <p style="margin-top: 16px;">Källkoden är öppen för granskning på <a href="https://github.com/daseus/hrplus-lon" rel="noopener">github.com/daseus/hrplus-lon</a>.</p>
+        </section>
+
+        <section class="help-panel" id="helpPanelNews" role="tabpanel" aria-labelledby="helpTabNews" hidden>
+          <h3>Nyheter och versionshistorik</h3>
+          <p class="help-lead">Kort sammanfattning av förändringar som påverkar användningen.</p>
+          <article class="changelog-entry">
+            <h4>Version 1.1.0 · 2026-08-28</h4>
+            <p>Nytt visuellt uttryck, tydligare hjälp med flikar och versionshistorik. Löneunderlag visar nu alla verkliga personrader; filtret för arbetsgivaravgifter och bokföringspåslag används bara för Bokföringsposter.</p>
+          </article>
+          <article class="changelog-entry">
+            <h4>Version 1.0 · första publicerade versionen</h4>
+            <p>Import, sökning, summering, sammanslagning av kostnadsdelade rader och utskrift per person eller för hela underlaget.</p>
+          </article>
+          <div class="help-card-grid" style="margin-top: 18px;">
+            <article class="help-card">
+              <h4>Om programmet</h4>
+              <p id="aboutText"></p>
+            </article>
+            <article class="help-card">
+              <h4>Kontakt</h4>
+              <p id="contactText"></p>
+            </article>
+          </div>
+        </section>
+      </div>
     </div>
   </dialog>
 
@@ -1135,7 +1464,7 @@
   <script>
     const APP_INFO = {
       name: "Löneunderlagsgranskare HR+",
-      version: "1.0",
+      version: "1.1.0",
       author: "David Campbell",
       contact: "david.campbell@svenskakyrkan.se"
     };
@@ -1233,6 +1562,7 @@
       fileInput: document.getElementById("fileInput"),
       searchInput: document.getElementById("searchInput"),
       showTechnicalInput: document.getElementById("showTechnicalInput"),
+      technicalToggleRow: document.getElementById("technicalToggleRow"),
       mergeSplitsInput: document.getElementById("mergeSplitsInput"),
       onlyWithRowsInput: document.getElementById("onlyWithRowsInput"),
       status: document.getElementById("status"),
@@ -1260,6 +1590,9 @@
       warningTitle: document.getElementById("warningTitle"),
       closeWarningButton: document.getElementById("closeWarningButton")
     };
+
+    const helpTabs = Array.from(document.querySelectorAll(".help-tab"));
+    const helpPanels = Array.from(document.querySelectorAll(".help-panel"));
 
     els.fileInput.addEventListener("change", handleFileChange);
     els.searchInput.addEventListener("input", () => {
@@ -1296,6 +1629,16 @@
     els.nextButton.addEventListener("click", () => selectRelativeEmployee(1));
     els.helpButton.addEventListener("click", openHelp);
     els.closeHelpButton.addEventListener("click", closeHelp);
+    helpTabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => selectHelpTab(tab.id));
+      tab.addEventListener("keydown", (event) => {
+        if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
+        event.preventDefault();
+        const direction = event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1 : -1;
+        const nextTab = helpTabs[(index + direction + helpTabs.length) % helpTabs.length];
+        selectHelpTab(nextTab.id);
+      });
+    });
     els.helpDialog.addEventListener("click", (event) => {
       if (event.target === els.helpDialog) closeHelp();
     });
@@ -1709,7 +2052,8 @@
       const description = getText(raw, "description");
       const payCode = getText(raw, "payCode");
       const amount = getNumber(raw, "amount");
-      const category = categorizeRow(payCode, description);
+      const sourceType = cleanText(raw && raw.__sourceType);
+      const category = categorizeRow(payCode, description, sourceType);
 
       return {
         original: raw,
@@ -1843,9 +2187,9 @@
       return dates[0] === dates[dates.length - 1] ? dates[0] : `${dates[0]} - ${dates[dates.length - 1]}`;
     }
 
-    function categorizeRow(payCode, description) {
+    function categorizeRow(payCode, description, sourceType = "") {
       const text = `${payCode} ${description}`;
-      if (TECHNICAL_PATTERNS.some((pattern) => pattern.test(text))) return "technical";
+      if (sourceType === "accounting" && TECHNICAL_PATTERNS.some((pattern) => pattern.test(text))) return "technical";
       if (/utbetald\s*nett[oö]lön|^990\b/i.test(text)) return "net";
       if (/sjuk|karens|semester|komp|frånvaro|föräldra|vab|ledighet|sparad/i.test(text)) return "absence";
       if (/skatt|utmätning|nettolöneavdrag|löneavdrag|öresutjämning/i.test(text)) return "tax";
@@ -2032,6 +2376,10 @@
     }
 
     function renderReportToolbar(title, detail) {
+      const hasTechnicalRows = state.rows.some((row) => row.isTechnical);
+      const visibilityLabel = hasTechnicalRows
+        ? (state.showTechnical ? "Alla rader visas" : "Bokföringspåslag dolda")
+        : "Alla lönerader visas";
       return `
         <div class="report-toolbar">
           <div>
@@ -2039,7 +2387,7 @@
             <span>${escapeHtml(detail)}</span>
           </div>
           <div class="actions">
-            <span class="tag">${state.showTechnical ? "Alla rader" : "Tekniska rader dolda"}</span>
+            <span class="tag">${visibilityLabel}</span>
           </div>
         </div>
       `;
@@ -2279,14 +2627,15 @@
       els.sortSelect.value = state.sortBy;
       els.mergeSplitsInput.checked = state.mergeSplits;
       const hasTechnicalRows = state.rows.some((row) => row.isTechnical);
+      els.technicalToggleRow.classList.toggle("hidden", !hasTechnicalRows);
       if (!hasTechnicalRows) {
         state.showTechnical = false;
         els.showTechnicalInput.checked = false;
       }
       els.showTechnicalInput.disabled = !enabled || !hasTechnicalRows;
       els.showTechnicalInput.parentElement.title = hasTechnicalRows
-        ? "Visar eller döljer arbetsgivaravgifter, pensions-/försäkringsrader och andra bokföringsrader."
-        : "Den importerade filen innehåller inga tekniska/bokföringsrader att visa.";
+        ? "Visar eller döljer arbetsgivaravgifter, pensions-/försäkringsrader och andra bokföringspåslag."
+        : "Det här underlaget innehåller inga separata bokföringspåslag.";
       els.pagerStatus.textContent = employees.length
         ? `${selectedIndex + 1 || 1} av ${employees.length}`
         : "0 av 0";
@@ -2422,10 +2771,25 @@
     }
 
     function openHelp() {
+      selectHelpTab("helpTabStart", false);
       if (typeof els.helpDialog.showModal === "function") {
         els.helpDialog.showModal();
       } else {
         showWarning(`${APP_INFO.name}\n\nBokförd löneunderlagslista: Ekonomirutin > Bokföringsposter > Mer > Export > Kalkylprogram.\nLöneunderlag från I: (preliminärt löneunderlag): Ekonomirutin > Löneunderlagslista > Mer > Export > Kalkylprogram.\n\nKontakt: ${APP_INFO.contact}`, "Information");
+      }
+    }
+
+    function selectHelpTab(tabId, focus = true) {
+      for (const tab of helpTabs) {
+        const isSelected = tab.id === tabId;
+        tab.setAttribute("aria-selected", String(isSelected));
+        tab.tabIndex = isSelected ? 0 : -1;
+        if (isSelected && focus) tab.focus();
+      }
+
+      for (const panel of helpPanels) {
+        const selectedTab = helpTabs.find((tab) => tab.getAttribute("aria-controls") === panel.id);
+        panel.hidden = !selectedTab || selectedTab.id !== tabId;
       }
     }
 

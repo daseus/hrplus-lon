@@ -18,15 +18,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Löneunderlagsgranskare</title>
-  <script src="vendor/xlsx.full.min.js"></script>
-  <link rel="stylesheet" href="assets/app.css?v=b0097d627c9a">
+  <script src="vendor/xlsx.full.min.js?v=cc015130aa85"></script>
+  <link rel="stylesheet" href="assets/app.css?v=10842f88a6d5">
 </head>
 <body>
   <div class="app">
     <header class="topbar">
       <div class="brand">
-        <h1>Löneunderlagsgranskare HR+</h1>
-        <p>Importera Excel-exporten och granska en anställd åt gången.</p>
+        <div class="brand-mark" aria-hidden="true">HR+</div>
+        <div class="brand-copy">
+          <h1>Löneunderlagsgranskare</h1>
+          <p>Importera Excel-exporten och granska en anställd åt gången.</p>
+        </div>
       </div>
       <div class="file-controls">
         <label class="file-field">
@@ -79,9 +82,9 @@
               <button id="nextButton" type="button" disabled>›</button>
             </div>
           </div>
-          <label class="toggle-row">
+          <label id="technicalToggleRow" class="toggle-row hidden">
             <input id="showTechnicalInput" type="checkbox" disabled>
-            Visa tekniska/bokföringsrader
+            Visa arbetsgivaravgifter, pensioner och bokföringspåslag
           </label>
           <label class="toggle-row">
             <input id="mergeSplitsInput" type="checkbox" checked disabled>
@@ -109,44 +112,100 @@
     <div class="help-header">
       <div>
         <h2 id="helpTitle">Hjälp och information</h2>
-        <p>Löneunderlagsgranskare HR+</p>
+        <p>Löneunderlagsgranskare <span class="version-chip">v1.1.0</span></p>
       </div>
       <button id="closeHelpButton" type="button" aria-label="Stäng hjälp">Stäng</button>
     </div>
     <div class="help-body">
-      <section>
-        <h3>Så använder du verktyget</h3>
-        <ol>
-          <li>För att granska bokförd löneunderlagslista när månaden är klar: hämta exporten via <strong>Ekonomirutin → Bokföringsposter → Mer → Export</strong>. Välj formatet <strong>Kalkylprogram</strong>.</li>
-          <li>För att granska transaktioner när löneservice har börjat arbeta med lönerna: gå till <strong>Rapporter &amp; Dokument</strong>, sök efter <strong>Transaktionslista</strong>, öppna rapporten och välj <strong>Spara som Excel</strong>.</li>
-          <li>För att granska lönepåverkande poster och beräkningsunderlag för en särskild period: hämta exporten via <strong>Ekonomirutin → Löneunderlagslista → Mer → Export</strong>. Välj formatet <strong>Kalkylprogram</strong>.</li>
-          <li>Importera den exporterade filen via <strong>Importera underlag</strong>.</li>
-          <li>Välj en anställd i listan, sök på namn/anst.nr/löneart eller växla till <strong>Alla</strong>.</li>
-          <li>Använd <strong>Slå ihop kostnadsdelade rader</strong> för en mer läsbar vy där samma löneart och period summeras över kontodelar.</li>
-          <li>Använd <strong>Skriv ut</strong> för aktuell vy eller <strong>Skriv ut alla</strong> för hela rapporten. Välj <strong>Spara som PDF</strong> i utskriftsdialogen om du vill skapa en PDF.</li>
-        </ol>
-      </section>
-      <section>
-        <h3>Underlagstyper</h3>
-        <p><strong>Bokföringsposter</strong> används för att granska bokförd löneunderlagslista när underlaget är klart för månaden.</p>
-        <p><strong>Transaktionslista</strong> visar lönearter, preliminärskatt och utbetald nettolön när löneservice har börjat arbeta med lönerna. Den kan ge bättre inblick än löneunderlagslistan, men behöver inte betyda att månaden är helt färdig.</p>
-        <p><strong>Löneunderlagslista (Hr+)</strong> från <strong>Ekonomirutin → Löneunderlagslista</strong> visar registrerade lönepåverkande poster för vald period.</p>
-        <p><strong>Löneunderlag från I:</strong> Detta är filen vi får från löneservice på I:.</p>
-      </section>
-      <section>
-        <h3>Dataskydd</h3>
-        <p>Importerade Excel-filer behandlas enbart lokalt i din webbläsare. Ingen information från den valda filen, inklusive löneuppgifter, skickas vidare till någon server.</p>
-        <p>Vid besök på sidan hämtas bara appens filer (HTML/CSS/JS och bibliotek) från vår webbplats; inget filinnehåll från din dator skickas iväg.</p>
-        <p>Källkoden är öppen för granskning på <a href="https://github.com/daseus/hrplus-lon" rel="noopener">github.com/daseus/hrplus-lon</a>.</p>
-      </section>
-      <section>
-        <h3>Om programmet</h3>
-        <p id="aboutText"></p>
-      </section>
-      <section>
-        <h3>Kontakt</h3>
-        <p id="contactText"></p>
-      </section>
+      <nav class="help-nav" role="tablist" aria-label="Hjälpavsnitt">
+        <button class="help-tab" id="helpTabStart" type="button" role="tab" aria-selected="true" aria-controls="helpPanelStart">Kom igång</button>
+        <button class="help-tab" id="helpTabSources" type="button" role="tab" aria-selected="false" aria-controls="helpPanelSources" tabindex="-1">Underlag</button>
+        <button class="help-tab" id="helpTabPrivacy" type="button" role="tab" aria-selected="false" aria-controls="helpPanelPrivacy" tabindex="-1">Dataskydd</button>
+        <button class="help-tab" id="helpTabNews" type="button" role="tab" aria-selected="false" aria-controls="helpPanelNews" tabindex="-1">Nyheter &amp; om</button>
+      </nav>
+      <div class="help-panels">
+        <section class="help-panel" id="helpPanelStart" role="tabpanel" aria-labelledby="helpTabStart">
+          <h3>Kom igång</h3>
+          <p class="help-lead">Från Excel-export till en läsbar kontroll per anställd.</p>
+          <ol class="help-steps">
+            <li>Hämta rätt export i HR+ eller från löneservice. Se fliken <strong>Underlag</strong> om du är osäker.</li>
+            <li>Välj filen under <strong>Importera underlag</strong>. Filen behandlas bara lokalt i webbläsaren.</li>
+            <li>Välj en person, sök på namn/anst.nr/löneart eller växla till <strong>Alla</strong>.</li>
+            <li>Låt <strong>Slå ihop kostnadsdelade rader</strong> vara aktiv för en kompakt vy. Stäng av den när varje källrad behöver granskas separat.</li>
+            <li>Använd <strong>Skriv ut</strong> för aktuell person eller <strong>Skriv ut alla</strong>. Välj <strong>Spara som PDF</strong> i utskriftsdialogen vid behov.</li>
+          </ol>
+        </section>
+
+        <section class="help-panel" id="helpPanelSources" role="tabpanel" aria-labelledby="helpTabSources" hidden>
+          <h3>Vilket underlag ska jag välja?</h3>
+          <p class="help-lead">Välj efter var i löneprocessen kontrollen sker.</p>
+          <div class="help-card-grid">
+            <article class="help-card">
+              <h4>Bokföringsposter</h4>
+              <p>För den bokförda lönen när månaden är klar. Hämta via <strong>Ekonomirutin → Bokföringsposter → Mer → Export → Kalkylprogram</strong>.</p>
+            </article>
+            <article class="help-card">
+              <h4>Transaktionslista</h4>
+              <p>Visar lönearter, skatt och nettolön när löneservice har börjat arbeta. Hämta via <strong>Rapporter &amp; Dokument → Transaktionslista → Spara som Excel</strong>.</p>
+            </article>
+            <article class="help-card">
+              <h4>Löneunderlagslista (HR+)</h4>
+              <p>För registrerade lönepåverkande poster under vald period. Hämta via <strong>Ekonomirutin → Löneunderlagslista → Mer → Export → Kalkylprogram</strong>.</p>
+            </article>
+            <article class="help-card">
+              <h4>Löneunderlag från I:</h4>
+              <p>Filen som kommer från löneservice på I:. Den kan innehålla preliminära beräkningar och avstämningsrader.</p>
+            </article>
+          </div>
+          <div class="privacy-card" style="margin-top: 14px;">
+            <h4>Om bokföringsrader</h4>
+            <p>I Bokföringsposter döljs arbetsgivaravgifter, pensionspremier och andra bokföringspåslag som standard. De kan visas med reglaget i sidopanelen.</p>
+          </div>
+        </section>
+
+        <section class="help-panel" id="helpPanelPrivacy" role="tabpanel" aria-labelledby="helpTabPrivacy" hidden>
+          <h3>Dataskydd</h3>
+          <p class="help-lead">Lönefilen stannar i den webbläsare där du öppnar den.</p>
+          <div class="privacy-card">
+            <h4>Ingen uppladdning</h4>
+            <p>Importerade Excel-filer behandlas enbart lokalt. Löneuppgifter och annat innehåll skickas inte till någon server.</p>
+          </div>
+          <div class="help-card-grid">
+            <article class="help-card">
+              <h4>Det som hämtas</h4>
+              <p>Webbläsaren hämtar bara appens HTML, CSS, JavaScript och det lokala Excel-biblioteket från webbplatsen.</p>
+            </article>
+            <article class="help-card">
+              <h4>Ditt ansvar</h4>
+              <p>Skydda skärmen och hantera sparade PDF-filer som andra lönehandlingar. Stäng fliken när granskningen är klar.</p>
+            </article>
+          </div>
+          <p style="margin-top: 16px;">Källkoden är öppen för granskning på <a href="https://github.com/daseus/hrplus-lon" rel="noopener">github.com/daseus/hrplus-lon</a>.</p>
+        </section>
+
+        <section class="help-panel" id="helpPanelNews" role="tabpanel" aria-labelledby="helpTabNews" hidden>
+          <h3>Nyheter och versionshistorik</h3>
+          <p class="help-lead">Kort sammanfattning av förändringar som påverkar användningen.</p>
+          <article class="changelog-entry">
+            <h4>Version 1.1.0 · 2026-08-28</h4>
+            <p>Nytt visuellt uttryck, tydligare hjälp med flikar och versionshistorik. Löneunderlag visar nu alla verkliga personrader; filtret för arbetsgivaravgifter och bokföringspåslag används bara för Bokföringsposter.</p>
+          </article>
+          <article class="changelog-entry">
+            <h4>Version 1.0 · första publicerade versionen</h4>
+            <p>Import, sökning, summering, sammanslagning av kostnadsdelade rader och utskrift per person eller för hela underlaget.</p>
+          </article>
+          <div class="help-card-grid" style="margin-top: 18px;">
+            <article class="help-card">
+              <h4>Om programmet</h4>
+              <p id="aboutText"></p>
+            </article>
+            <article class="help-card">
+              <h4>Kontakt</h4>
+              <p id="contactText"></p>
+            </article>
+          </div>
+        </section>
+      </div>
     </div>
   </dialog>
 
@@ -162,6 +221,6 @@
     </div>
   </dialog>
 
-  <script src="assets/app.js?v=7b34ad5ddef4"></script>
+  <script src="assets/app.js?v=5f03f1370048"></script>
 </body>
 </html>

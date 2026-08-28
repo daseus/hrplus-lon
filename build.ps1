@@ -54,6 +54,10 @@ $sourceNotice = if (Test-Path -LiteralPath $sourceNoticeFile) {
 $html = [System.IO.File]::ReadAllText($sourceIndex, $utf8)
 $html = $html -replace "(?i)^<!doctype html>", "<!doctype html>`r`n$sourceNotice"
 
+$vendorContent = [System.IO.File]::ReadAllText($sourceVendor, $utf8)
+$vendorVersion = Get-ShortHash $vendorContent
+$html = $html -replace 'src="vendor/xlsx\.full\.min\.js(?:\?v=[^"]*)?"', "src=`"vendor/xlsx.full.min.js?v=$vendorVersion`""
+
 $styleMatch = [regex]::Match($html, "(?s)<style>\s*(?<css>.*?)\s*</style>")
 if ($styleMatch.Success) {
   $css = $styleMatch.Groups["css"].Value.Trim()
