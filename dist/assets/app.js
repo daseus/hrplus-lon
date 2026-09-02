@@ -1,6 +1,6 @@
 const APP_INFO = {
       name: "Löneunderlagsgranskare HR+",
-      version: "1.1.2",
+      version: "1.1.3",
       author: "David Campbell",
       contact: "david.campbell@svenskakyrkan.se"
     };
@@ -1364,7 +1364,7 @@ const APP_INFO = {
       if (typeof els.helpDialog.showModal === "function") {
         els.helpDialog.showModal();
       } else {
-        showWarning(`${APP_INFO.name}\n\nBokförd löneunderlagslista: Ekonomirutin > Bokföringsposter > Mer > Export > Kalkylprogram.\nLöneunderlag från I: (preliminärt löneunderlag): Ekonomirutin > Löneunderlagslista > Mer > Export > Kalkylprogram.\n\nKontakt: ${APP_INFO.contact}`, "Information");
+        showWarning(`${APP_INFO.name}\n\nBokförd löneunderlagslista: Ekonomirutin > Bokföringsposter > Mer > Export > Kalkylprogram.\nLöneunderlag från I:\nDet färdiga och kompletta löneunderlaget som löneservice lägger på I: när lönerna är klara.\n\nKontakt: ${APP_INFO.contact}`, "Information");
       }
     }
 
