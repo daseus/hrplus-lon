@@ -81,6 +81,10 @@ npx -y -p typescript@5.9.2 tsc --noEmit -p tsconfig.json
 
 För att rapportera fel eller bidra med ändringar, se [CONTRIBUTING.md](CONTRIBUTING.md). Hur projektet underhålls och nya versioner publiceras beskrivs i [maintenance.md](docs/maintenance.md).
 
+## Licens
+
+Projektet publiceras under [AGPL-3.0-or-later](LICENSE). Du får använda, ändra och dela koden. Om du erbjuder en ändrad version över ett nätverk behöver användarna också kunna få motsvarande källkod under samma licens.
+
 ## Håll lönefiler utanför repot
 
 Lägg inte Excel-exporter, PDF:er eller andra lönefiler i repot. `.gitignore` är inställd på att ignorera vanliga filtyper som `.xlsx`, `.xls`, `.csv` och `.pdf`.

@@ -9,7 +9,7 @@ underhålla används följande arbetsflöde.
   stämmas av tidigt.
 - Utgå från aktuell `main` och håll varje pull request fokuserad på ett tydligt
   problem.
-- Lägg aldrig lönefiler, exporter eller andra personuppgifter i repositoryt.
+- Lägg aldrig lönefiler, exporter eller andra personuppgifter i repot.
 
 ## Kvalitetskontroller
 
@@ -24,12 +24,11 @@ node build.mjs
 När källfiler ändras ska även den genererade `dist`-mappen uppdateras och
 committas. Beskriv gärna vilka verkliga användarflöden som har provats manuellt.
 
-## Granskning och publicering
+## Så förs ändringar in
 
 Ändringar går via pull request och automatiska kontroller innan de förs in i
-`main`. Projektets officiella webbversion, releaser och container-images
-publiceras därefter från detta repository av projektets förvaltare.
+`main`. Webbversionen, nya versioner och Docker-images byggs sedan härifrån.
 
-Genom att bidra bekräftar du att du har rätt att lämna in ändringen. Någon
-uttrycklig programvarulicens har ännu inte fastställts för projektet; kontakta
-förvaltaren om ditt bidrag förutsätter särskilda licensvillkor.
+Genom att bidra bekräftar du att du har rätt att lämna in ändringen och att den
+får publiceras under [AGPL-3.0-or-later](LICENSE), på samma villkor som resten av
+projektet.
