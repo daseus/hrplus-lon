@@ -6,9 +6,9 @@ på `main` och från versionstaggar.
 ## Starta
 
 ```bash
-docker pull ghcr.io/daseus/hrplus-lon:1.2.0
+docker pull ghcr.io/daseus/hrplus-lon:1.2.1
 docker run --read-only --tmpfs /tmp --tmpfs /var/cache/nginx \
-  -p 8848:8080 ghcr.io/daseus/hrplus-lon:1.2.0
+  -p 8848:8080 ghcr.io/daseus/hrplus-lon:1.2.1
 ```
 
 Öppna sedan `http://localhost:8848`.
@@ -23,7 +23,7 @@ docker compose up -d
 ## Välja version
 
 - `latest` följer det senaste bygget från `main`.
-- `1.2.0` är en fast utgåva.
+- `1.2.1` är en fast utgåva.
 - `1.2` följer senaste patchutgåvan inom 1.2.
 - `sha-...` låser installationen till en viss commit.
 
@@ -33,7 +33,7 @@ för `latest`.
 Poster som börjar med `sha256-...` på GitHub Packages är signerade intyg om
 byggursprunget, inte körbara container-images. Kopiera därför inte deras
 `docker pull`-kommando. En image-digest anges med `@sha256:...`, medan vanliga
-versioner anges med exempelvis `:1.2.0`.
+versioner anges med exempelvis `:1.2.1`.
 
 ## Dataskydd
 
