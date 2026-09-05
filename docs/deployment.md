@@ -10,7 +10,7 @@ När du gör en ändring:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\build.ps1
-git add index.html README.md docs source-notice.html build.ps1 dist
+git add index.html src test README.md docs source-notice.html build.mjs build.ps1 dist
 git commit -m "Uppdatering"
 git push
 ```
@@ -19,7 +19,7 @@ Efter push bygger Cloudflare den publicerade versionen från `dist`.
 
 ## Varför hård uppdatering inte ska behövas
 
-`dist/index.html` och `version.json` skickas med `no-store`. HTML-sidan länkar till `app.css`, `app.js` och Excel-biblioteket med versions-parametrar (`?v=...`) som byggaren räknar fram från innehållet. De versionsmärkta resurserna kan därför lagras länge utan att en ny utgåva fastnar på de gamla filerna.
+`dist/index.html` och `version.json` skickas med `no-store`. HTML-sidan länkar till `app.css`, `app.js`, logikmodulerna och Excel-biblioteket med versionsparametrar (`?v=...`) som byggaren räknar fram från innehållet. De versionsmärkta resurserna kan därför lagras länge utan att en ny utgåva fastnar på de gamla filerna.
 
 Det gör att webbläsaren får nya resurser när innehållet ändrats, även om statiska filer finns cache:ade.
 

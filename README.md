@@ -2,7 +2,7 @@
 
 Ett webbaserat granskningsverktyg för Excel-exporter från Hr+.
 
-Aktuell version: **1.1.3**
+Aktuell version: **1.2.0**
 
 Publicerad version: <https://hrlon.lerumsforsamling.se>
 
@@ -26,6 +26,26 @@ Källkoden är publik så att andra kan granska hur verktyget fungerar.
 
 - [Dataskydd och teknisk säkerhet](docs/security.md)
 - [Deployment och cache-beteende](docs/deployment.md)
+
+## Bygga
+
+Bygg `dist/` efter ändringar i `index.html`, `src/` eller `source-notice.html`. Bygget kräver Node och fungerar på alla plattformar:
+
+```bash
+node build.mjs
+```
+
+På Windows fungerar även den befintliga PowerShell-kommandoraden:
+
+```powershell
+.\build.ps1
+```
+
+Commita sedan både källfilerna och den uppdaterade `dist`-mappen. Bygget lägger innehållshashar på JavaScript, CSS, logikmoduler och Excel-biblioteket så att publicerade uppdateringar når redan öppna webbläsare utan att en pågående granskning försvinner.
+
+## Utveckling
+
+Källkoden ligger i `src/`, med ren logik i `src/logic/` och UI-kopplingar i `src/app.js`. Tester körs med `node --test`. Den rena logiken typkontrolleras med `npx -y -p typescript@5.9.2 tsc --noEmit -p tsconfig.json`.
 
 ## Viktigt
 
