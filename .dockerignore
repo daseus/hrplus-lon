@@ -1,0 +1,14 @@
+.git
+.github
+dist
+docs
+test
+node_modules
+*.xlsx
+*.xls
+*.xlsm
+*.csv
+*.pdf
+*.tmp
+*.temp
+
