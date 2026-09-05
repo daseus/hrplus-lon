@@ -1,0 +1,27 @@
+name: Projektets hälsokontroll
+
+on:
+  schedule:
+    - cron: "23 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Kör testsvit
+        run: node --test
+      - name: Typkontroll
+        run: npx -y -p typescript@5.9.2 tsc --noEmit -p tsconfig.json
+      - name: Kontrollera reproducerbart bygge
+        run: |
+          node build.mjs ci-dist
+          diff -qr dist ci-dist
+
