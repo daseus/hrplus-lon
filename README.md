@@ -1,49 +1,41 @@
 # Löneunderlagsgranskare HR+
 
-Ett webbaserat granskningsverktyg för Excel-exporter från Hr+.
+Ett webbverktyg för att granska löneunderlag från Hr+. Du öppnar en Excel-export och får underlaget uppdelat per anställd, utan att behöva filtrera manuellt i Excel.
 
 Aktuell version: **1.2.0**
 
-> Detta är projektets officiellt underhållna repository. Godkända releaser,
-> webbversionen och container-images publiceras härifrån.
+- [Öppna verktyget](https://hrlon.lerumsforsamling.se/)
+- [Hämta en version](https://github.com/daseus/hrplus-lon/releases)
+- Docker-image: `ghcr.io/daseus/hrplus-lon`
 
-- Officiell webbversion: <https://hrlon.lerumsforsamling.se>
-- Officiell container: `ghcr.io/daseus/hrplus-lon`
-- Releaser: <https://github.com/daseus/hrplus-lon/releases>
+Här finns källkoden som webbversionen och Docker-imagen byggs från.
 
-## Kort om verktyget
+## Exporter som stöds
 
-Verktyget gör det enklare att granska löneunderlag per anställd i stället för att arbeta manuellt med filter i Excel.
-
-Det stödjer export från:
+Verktyget kan läsa Excel-filer från följande vyer i Hr+:
 
 - `Ekonomirutin → Bokföringsposter → Mer → Export → Kalkylprogram`
 - `Rapporter & Dokument → Transaktionslista → Spara som Excel`
 - `Ekonomirutin → Löneunderlagslista → Mer → Export → Kalkylprogram`
 
-## Dataskydd
+## Dina filer stannar i webbläsaren
 
-Importerade Excel-filer behandlas enbart lokalt i din webbläsare. Ingen information från den valda filen skickas vidare till någon server.
+Excel-filerna behandlas lokalt i din webbläsare. Innehållet laddas inte upp till någon server och skickas inte vidare för lagring, analys eller spårning.
 
-Vid besök på sidan hämtas endast själva app-filerna från vår webb (index, css, javascript och bibliotek). Inget filinnehåll från din dator skickas med.
+När du öppnar sidan hämtar webbläsaren de filer som behövs för att köra verktyget. Innehållet i dina Excel-filer följer inte med i de anropen.
 
-Källkoden är publik så att andra kan granska hur verktyget fungerar.
+Eftersom löneunderlag innehåller känsliga uppgifter har källkoden granskats särskilt med fokus på dataskydd. Källkoden går också att läsa för den som själv vill granska hur verktyget fungerar.
+
+Det här gäller versionerna som publiceras här och webbversionen som länkas ovan. Om du använder en kopia från någon annan kan koden ha ändrats. Kontrollera därför hur den hanterar filer innan du öppnar känsliga uppgifter.
+
+Läs mer:
 
 - [Dataskydd och teknisk säkerhet](docs/security.md)
-- [Deployment och cache-beteende](docs/deployment.md)
-
-Eftersom verktyget används för löneunderlag har källkoden granskats särskilt
-med fokus på dataskydd. Importerade filer behandlas lokalt i webbläsaren och
-innehållet skickas inte vidare genom nätverksanrop för lagring, analys eller
-spårning.
-
-Jag kan bara säkerställa detta för koden och de versioner som publiceras från
-detta repository. Forks och andra distributioner kan innehålla egna ändringar
-och behöver därför granskas separat innan de används med känsliga uppgifter.
+- [Publicering och cache](docs/deployment.md)
 
 ## Köra med Docker
 
-Den officiella imagen byggs från testad kod i detta repository:
+Docker-imagen byggs från testad kod i det här repot:
 
 ```bash
 docker pull ghcr.io/daseus/hrplus-lon:1.2.0
@@ -55,26 +47,40 @@ Se [containerdokumentationen](DOCKER.md) för fasta versioner och Docker Compose
 
 ## Bygga
 
-Bygg `dist/` efter ändringar i `index.html`, `src/` eller `source-notice.html`. Bygget kräver Node och fungerar på alla plattformar:
+Efter ändringar i `index.html`, `src/` eller `source-notice.html` behöver du uppdatera `dist/`. Bygget kräver Node:
 
 ```bash
 node build.mjs
 ```
 
-På Windows fungerar även den befintliga PowerShell-kommandoraden:
+På Windows kan du också använda PowerShell:
 
 ```powershell
 .\build.ps1
 ```
 
-Commita sedan både källfilerna och den uppdaterade `dist`-mappen. Bygget lägger innehållshashar på JavaScript, CSS, logikmoduler och Excel-biblioteket så att publicerade uppdateringar når redan öppna webbläsare utan att en pågående granskning försvinner.
+Commita både källfilerna och den uppdaterade `dist/`-mappen.
+
+Bygget ger JavaScript, CSS, logikmoduler och Excel-biblioteket filnamn med innehållshashar. Det hjälper webbläsaren att hämta rätt filer när en ny version publiceras. Läs mer om hur uppdateringar hanteras i [dokumentationen om publicering och cache](docs/deployment.md).
 
 ## Utveckling
 
-Källkoden ligger i `src/`, med ren logik i `src/logic/` och UI-kopplingar i `src/app.js`. Tester körs med `node --test`. Den rena logiken typkontrolleras med `npx -y -p typescript@5.9.2 tsc --noEmit -p tsconfig.json`.
+Källkoden ligger i `src/`. Beräknings- och bearbetningslogiken finns i `src/logic/`, och kopplingarna till gränssnittet finns i `src/app.js`.
 
-Bidrag hanteras genom issues och pull requests enligt [CONTRIBUTING.md](CONTRIBUTING.md). Förvaltnings- och releaseflödet finns beskrivet i [docs/maintenance.md](docs/maintenance.md).
+Kör testerna med:
 
-## Viktigt
+```bash
+node --test
+```
 
-Excel-exporter, PDF:er och andra lönefiler ska inte läggas i repot. `.gitignore` blockerar vanliga filtyper som `.xlsx`, `.xls`, `.csv` och `.pdf`.
+Typkontrollera logiken med:
+
+```bash
+npx -y -p typescript@5.9.2 tsc --noEmit -p tsconfig.json
+```
+
+För att rapportera fel eller bidra med ändringar, se [CONTRIBUTING.md](CONTRIBUTING.md). Hur projektet underhålls och nya versioner publiceras beskrivs i [maintenance.md](docs/maintenance.md).
+
+## Håll lönefiler utanför repot
+
+Lägg inte Excel-exporter, PDF:er eller andra lönefiler i repot. `.gitignore` är inställd på att ignorera vanliga filtyper som `.xlsx`, `.xls`, `.csv` och `.pdf`.
