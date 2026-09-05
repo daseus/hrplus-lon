@@ -1,12 +1,12 @@
-import { cleanText, parseNumber, formatDate, formatDateRange, formatCurrency, formatOptionalCurrency, formatDecimal, formatInteger, sum, roundCurrency, escapeHtml } from "./logic/format.js?v=36c34b0f5f67";
-import { COLUMN_ALIASES, REQUIRED_FIELDS, resolveColumn, getValue, getText, getNumber } from "./logic/columns.js?v=36c34b0f5f67";
-import { splitPayItem, splitFullName } from "./logic/names.js?v=36c34b0f5f67";
-import { SECTION_ORDER, SECTION_LABELS, categorizeRow } from "./logic/categorize.js?v=36c34b0f5f67";
-import { getSourceType, inferSourceTypeFromRawRows } from "./logic/detect.js?v=36c34b0f5f67";
-import { parseTransactionList, findTransactionPaymentDate, findTransactionCompany } from "./logic/transactions.js?v=36c34b0f5f67";
-import { parsePayrollDraftRows } from "./logic/payrollDraft.js?v=36c34b0f5f67";
-import { isPayrollGrossRow, isPayrollNetPayRow, isPayrollSummaryRow, addPayrollReconciliationRows } from "./logic/payroll.js?v=36c34b0f5f67";
-import { summarizeSingleOrSpan, summarizeDateSpan } from "./logic/dates.js?v=36c34b0f5f67";
+import { cleanText, parseNumber, formatDate, formatDateRange, formatCurrency, formatOptionalCurrency, formatDecimal, formatInteger, sum, roundCurrency, escapeHtml } from "./logic/format.js";
+import { COLUMN_ALIASES, REQUIRED_FIELDS, resolveColumn, getValue, getText, getNumber } from "./logic/columns.js";
+import { splitPayItem, splitFullName } from "./logic/names.js";
+import { SECTION_ORDER, SECTION_LABELS, categorizeRow } from "./logic/categorize.js";
+import { getSourceType, inferSourceTypeFromRawRows } from "./logic/detect.js";
+import { parseTransactionList, findTransactionPaymentDate, findTransactionCompany } from "./logic/transactions.js";
+import { parsePayrollDraftRows } from "./logic/payrollDraft.js";
+import { isPayrollGrossRow, isPayrollNetPayRow, isPayrollSummaryRow, addPayrollReconciliationRows } from "./logic/payroll.js";
+import { summarizeSingleOrSpan, summarizeDateSpan } from "./logic/dates.js";
 
 const APP_INFO = {
   name: "Löneunderlagsgranskare HR+",
@@ -194,7 +194,7 @@ async function importFile(file) {
     if (!window.XLSX) {
       await new Promise((resolve, reject) => {
         const script = document.createElement("script");
-        script.src = "vendor/xlsx.full.min.js?v=cc015130aa85";
+        script.src = "vendor/xlsx.full.min.js";
         script.onload = resolve;
         script.onerror = () => reject(new Error("Kunde inte ladda biblioteket för Excel-läsning."));
         document.head.appendChild(script);

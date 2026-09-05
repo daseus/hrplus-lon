@@ -1,0 +1,28 @@
+name: Tester
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Kör testsvit
+        run: node --test
+      - name: Typkontroll (tsc --checkJs)
+        run: npx -y -p typescript@5.9.2 tsc --noEmit -p tsconfig.json
+      - name: Verifiera reproducerbart bygge
+        run: |
+          node build.mjs ci-dist
+          test -f ci-dist/version.json
+          grep -q 'assets/app.js?v=' ci-dist/index.html
