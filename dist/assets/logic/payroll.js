@@ -1,6 +1,6 @@
 // Hjälpare för löneunderlag (payrollDraftHr / payrollDraftI): identifiering av
 // brutto-/nettorader och avstämning av dolda nettoavdrag.
-import { cleanText, sum, roundCurrency } from "./format.js?v=36c34b0f5f67";
+import { cleanText, sum, roundCurrency } from "./format.js?v=611a87dd5efc";
 
 export function isPayrollGrossRow(row) {
   const payCode = cleanText(row && row.payCode).toLowerCase();

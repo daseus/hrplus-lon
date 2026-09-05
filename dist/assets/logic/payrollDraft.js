@@ -1,6 +1,6 @@
 // Parser för löneunderlag: "Löneunderlagslista (Hr+)" och "Löneunderlag från I:".
 // Skiljer på undertyperna via I-specifika nyckelord i rubrikraden.
-import { cleanText, parseNumber } from "./format.js?v=36c34b0f5f67";
+import { cleanText, parseNumber } from "./format.js?v=611a87dd5efc";
 
 export function parsePayrollDraftRows(matrix) {
   const payrollIKeywords = ["textfält 1", "textfält 2", "tecken", "anst.id"];

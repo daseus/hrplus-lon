@@ -1,5 +1,5 @@
 // Identifiering av exporttyp utifrån vilka fält som finns.
-import { cleanText } from "./format.js?v=36c34b0f5f67";
+import { cleanText } from "./format.js?v=611a87dd5efc";
 
 /**
  * @typedef {Object} SourceType
