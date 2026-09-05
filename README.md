@@ -2,7 +2,7 @@
 
 Ett webbverktyg för att granska löneunderlag från Hr+. Du öppnar en Excel-export och får underlaget uppdelat per anställd, utan att behöva filtrera manuellt i Excel.
 
-Aktuell version: **1.2.0**
+Aktuell version: **1.2.1**
 
 - [Öppna verktyget](https://hrlon.lerumsforsamling.se/)
 - [Hämta en version](https://github.com/daseus/hrplus-lon/releases)
@@ -38,9 +38,9 @@ Läs mer:
 Docker-imagen byggs från testad kod i det här repot:
 
 ```bash
-docker pull ghcr.io/daseus/hrplus-lon:1.2.0
+docker pull ghcr.io/daseus/hrplus-lon:1.2.1
 docker run --read-only --tmpfs /tmp --tmpfs /var/cache/nginx \
-  -p 8848:8080 ghcr.io/daseus/hrplus-lon:1.2.0
+  -p 8848:8080 ghcr.io/daseus/hrplus-lon:1.2.1
 ```
 
 Se [containerdokumentationen](DOCKER.md) för fasta versioner och Docker Compose.

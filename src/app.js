@@ -10,7 +10,7 @@ import { summarizeSingleOrSpan, summarizeDateSpan } from "./logic/dates.js";
 
 const APP_INFO = {
   name: "Löneunderlagsgranskare HR+",
-  version: "1.2.0",
+  version: "1.2.1",
   author: "David Campbell",
   contact: "david.campbell@svenskakyrkan.se"
 };
