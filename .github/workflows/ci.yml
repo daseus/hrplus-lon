@@ -26,3 +26,5 @@ jobs:
           node build.mjs ci-dist
           test -f ci-dist/version.json
           grep -q 'assets/app.js?v=' ci-dist/index.html
+      - name: Verifiera containerbygge
+        run: docker build --tag hrplus-lon:test .
