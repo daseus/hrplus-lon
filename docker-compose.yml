@@ -8,4 +8,3 @@ services:
     tmpfs:
       - /tmp
       - /var/cache/nginx
-

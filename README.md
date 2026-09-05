@@ -4,7 +4,12 @@ Ett webbaserat granskningsverktyg för Excel-exporter från Hr+.
 
 Aktuell version: **1.2.0**
 
-Publicerad version: <https://hrlon.lerumsforsamling.se>
+> Detta är projektets officiellt underhållna repository. Godkända releaser,
+> webbversionen och container-images publiceras härifrån.
+
+- Officiell webbversion: <https://hrlon.lerumsforsamling.se>
+- Officiell container: `ghcr.io/daseus/hrplus-lon`
+- Releaser: <https://github.com/daseus/hrplus-lon/releases>
 
 ## Kort om verktyget
 
@@ -27,6 +32,18 @@ Källkoden är publik så att andra kan granska hur verktyget fungerar.
 - [Dataskydd och teknisk säkerhet](docs/security.md)
 - [Deployment och cache-beteende](docs/deployment.md)
 
+## Köra med Docker
+
+Den officiella imagen byggs från testad kod i detta repository:
+
+```bash
+docker pull ghcr.io/daseus/hrplus-lon:latest
+docker run --read-only --tmpfs /tmp --tmpfs /var/cache/nginx \
+  -p 8848:8080 ghcr.io/daseus/hrplus-lon:latest
+```
+
+Se [containerdokumentationen](DOCKER.md) för fasta versioner och Docker Compose.
+
 ## Bygga
 
 Bygg `dist/` efter ändringar i `index.html`, `src/` eller `source-notice.html`. Bygget kräver Node och fungerar på alla plattformar:
@@ -46,6 +63,8 @@ Commita sedan både källfilerna och den uppdaterade `dist`-mappen. Bygget lägg
 ## Utveckling
 
 Källkoden ligger i `src/`, med ren logik i `src/logic/` och UI-kopplingar i `src/app.js`. Tester körs med `node --test`. Den rena logiken typkontrolleras med `npx -y -p typescript@5.9.2 tsc --noEmit -p tsconfig.json`.
+
+Bidrag hanteras genom issues och pull requests enligt [CONTRIBUTING.md](CONTRIBUTING.md). Förvaltnings- och releaseflödet finns beskrivet i [docs/maintenance.md](docs/maintenance.md).
 
 ## Viktigt
 
