@@ -6,9 +6,9 @@ Registry från testad kod på `main` och från versionstaggar.
 ## Starta
 
 ```bash
-docker pull ghcr.io/daseus/hrplus-lon:latest
+docker pull ghcr.io/daseus/hrplus-lon:1.2.0
 docker run --read-only --tmpfs /tmp --tmpfs /var/cache/nginx \
-  -p 8848:8080 ghcr.io/daseus/hrplus-lon:latest
+  -p 8848:8080 ghcr.io/daseus/hrplus-lon:1.2.0
 ```
 
 Öppna sedan `http://localhost:8848`.
@@ -29,6 +29,11 @@ docker compose up -d
 
 För reproducerbar drift bör en versionstagg eller image-digest användas i stället
 för `latest`.
+
+Poster som börjar med `sha256-...` på GitHub Packages är signerade intyg om
+byggursprunget, inte körbara container-images. Kopiera därför inte deras
+`docker pull`-kommando. En image-digest anges med `@sha256:...`, medan vanliga
+versioner anges med exempelvis `:1.2.0`.
 
 ## Dataskydd
 

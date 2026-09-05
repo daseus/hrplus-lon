@@ -46,9 +46,9 @@ och behöver därför granskas separat innan de används med känsliga uppgifter
 Den officiella imagen byggs från testad kod i detta repository:
 
 ```bash
-docker pull ghcr.io/daseus/hrplus-lon:latest
+docker pull ghcr.io/daseus/hrplus-lon:1.2.0
 docker run --read-only --tmpfs /tmp --tmpfs /var/cache/nginx \
-  -p 8848:8080 ghcr.io/daseus/hrplus-lon:latest
+  -p 8848:8080 ghcr.io/daseus/hrplus-lon:1.2.0
 ```
 
 Se [containerdokumentationen](DOCKER.md) för fasta versioner och Docker Compose.
