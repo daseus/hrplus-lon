@@ -24,4 +24,3 @@ jobs:
         run: |
           node build.mjs ci-dist
           diff -qr dist ci-dist
-

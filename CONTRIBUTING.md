@@ -33,4 +33,3 @@ publiceras därefter från detta repository av projektets förvaltare.
 Genom att bidra bekräftar du att du har rätt att lämna in ändringen. Någon
 uttrycklig programvarulicens har ännu inte fastställts för projektet; kontakta
 förvaltaren om ditt bidrag förutsätter särskilda licensvillkor.
-

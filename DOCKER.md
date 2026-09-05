@@ -34,4 +34,3 @@ för `latest`.
 
 Containern serverar endast statiska appfiler. Importerade lönefiler behandlas
 lokalt i användarens webbläsare och skickas inte till containern.
-

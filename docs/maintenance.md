@@ -25,3 +25,9 @@ bygge varje vecka. GitHubs repository-notifieringar används för nya issues,
 pull requests och diskussioner. Aktivitet i repositorynätverket kan vid behov
 överblickas under **Insights → Forks**.
 
+## Kommunikation om nya versioner
+
+En GitHub Release är den gemensamma, publika versionssignalen. Användare och
+forkägare kan själva välja **Watch → Custom → Releases** för att få en
+notifiering utan att prenumerera på varje diskussion. Forkar uppdateras inte
+automatiskt; ägaren kan hämta en ny huvudversion genom **Sync fork**.
