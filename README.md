@@ -32,6 +32,15 @@ Källkoden är publik så att andra kan granska hur verktyget fungerar.
 - [Dataskydd och teknisk säkerhet](docs/security.md)
 - [Deployment och cache-beteende](docs/deployment.md)
 
+Eftersom verktyget används för löneunderlag har källkoden granskats särskilt
+med fokus på dataskydd. Importerade filer behandlas lokalt i webbläsaren och
+innehållet skickas inte vidare genom nätverksanrop för lagring, analys eller
+spårning.
+
+Jag kan bara säkerställa detta för koden och de versioner som publiceras från
+detta repository. Forks och andra distributioner kan innehålla egna ändringar
+och behöver därför granskas separat innan de används med känsliga uppgifter.
+
 ## Köra med Docker
 
 Den officiella imagen byggs från testad kod i detta repository:

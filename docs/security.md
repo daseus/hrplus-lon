@@ -22,6 +22,21 @@ När du besöker appen sker en vanlig läsning av webbplatsfilerna:
 
 Det som du själv väljer från filsystemet (exportfilen) hålls lokalt i webbläsaren.
 
+Appens enda programmatiska nätverksanrop efter sidladdningen är en
+versionskontroll mot `version.json` på samma webbplats. Publiceringsmiljöernas
+Content Security Policy begränsar dessutom anslutningar till samma ursprung.
+
+## Kod och andra distributioner
+
+Källkoden i detta repository granskas med fokus på att importerade filer inte
+överförs för lagring, analys eller spårning. Testsviten kontrollerar att inga
+ytterligare vanliga nätverksfunktioner har införts och att säkerhetspolicyn
+fortsätter begränsa anslutningar.
+
+Detta kan bara säkerställas för koden och de versioner som publiceras från
+`daseus/hrplus-lon`. Forks och andra distributioner kan innehålla egna
+ändringar och behöver granskas separat innan de används med känsliga uppgifter.
+
 ## Varför detta är säkrare än traditionell export
 
 Syftet med appen är att ersätta manuell kontroll i Excel, inte att flytta data mellan system. Därför hålls datat i samma webbläsarsession.
