@@ -60,7 +60,7 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
           labels: |
             org.opencontainers.image.title=Löneunderlagsgranskare HR+
-            org.opencontainers.image.description=Officiell container för Löneunderlagsgranskare HR+
+            org.opencontainers.image.description=Container för Löneunderlagsgranskare HR+
             org.opencontainers.image.licenses=AGPL-3.0-or-later
       - name: Bygg och publicera
         id: push

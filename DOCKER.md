@@ -1,7 +1,7 @@
-# Officiell container
+# Docker
 
-Projektets officiellt underhållna container publiceras i GitHub Container
-Registry från testad kod på `main` och från versionstaggar.
+Projektets Docker-image publiceras i GitHub Container Registry från testad kod
+på `main` och från versionstaggar.
 
 ## Starta
 
@@ -22,7 +22,7 @@ docker compose up -d
 
 ## Välja version
 
-- `latest` följer senaste godkända versionen på `main`.
+- `latest` följer det senaste bygget från `main`.
 - `1.2.0` är en fast utgåva.
 - `1.2` följer senaste patchutgåvan inom 1.2.
 - `sha-...` låser installationen till en viss commit.

@@ -9,7 +9,7 @@ underhålla används följande arbetsflöde.
   stämmas av tidigt.
 - Utgå från aktuell `main` och håll varje pull request fokuserad på ett tydligt
   problem.
-- Lägg aldrig lönefiler, exporter eller andra personuppgifter i repositoryt.
+- Lägg aldrig lönefiler, exporter eller andra personuppgifter i repot.
 
 ## Kvalitetskontroller
 

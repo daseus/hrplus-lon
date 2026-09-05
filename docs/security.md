@@ -26,16 +26,16 @@ Appens enda programmatiska nätverksanrop efter sidladdningen är en
 versionskontroll mot `version.json` på samma webbplats. Publiceringsmiljöernas
 Content Security Policy begränsar dessutom anslutningar till samma ursprung.
 
-## Kod och andra distributioner
+## Kod från andra håll
 
-Källkoden i detta repository granskas med fokus på att importerade filer inte
+Källkoden i det här repot granskas med fokus på att importerade filer inte
 överförs för lagring, analys eller spårning. Testsviten kontrollerar att inga
 ytterligare vanliga nätverksfunktioner har införts och att säkerhetspolicyn
 fortsätter begränsa anslutningar.
 
 Detta kan bara säkerställas för koden och de versioner som publiceras från
-`daseus/hrplus-lon`. Forks och andra distributioner kan innehålla egna
-ändringar och behöver granskas separat innan de används med känsliga uppgifter.
+`daseus/hrplus-lon`. Kopior från andra håll kan innehålla egna ändringar och
+behöver granskas separat innan de används med känsliga uppgifter.
 
 ## Varför detta är säkrare än traditionell export
 
@@ -48,7 +48,7 @@ I praktiken minskar du risken att sprida filer via e-post och mellanlagring.
 - Lösenordsskydd, skärmlås och giltig inloggning i arbetsmiljön gäller fortfarande.
 - Appen kan inte skydda om datorn är infekterad eller en användare lämnar fönstret synligt.
 - Delning av sparade utskrifter och utsnitt från skärmen är fortfarande en mänsklig hanteringsrisk.
-- Du bör alltid använda officiell länk och aktuellt versionerat innehåll från er egen publiceringsmiljö.
+- Använd länken i projektets README eller aktuellt versionerat innehåll från er egen publiceringsmiljö.
 
 ## Länk till källkod
 

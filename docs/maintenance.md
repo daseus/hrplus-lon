@@ -1,6 +1,6 @@
-# Projektförvaltning
+# Så underhålls projektet
 
-Detta dokument beskriver den löpande, neutrala förvaltningen av projektet.
+En enkel checklista för ändringar och nya versioner.
 
 ## Vid varje ändring
 
@@ -10,9 +10,9 @@ Detta dokument beskriver den löpande, neutrala förvaltningen av projektet.
 4. Uppdatera version, ändringshistorik, README och `dist` tillsammans när en ny
    version publiceras.
 
-## Vid en release
+## När en ny version publiceras
 
-1. Kontrollera att `main` är ren och godkänd.
+1. Kontrollera att `main` är uppdaterad och att testerna är gröna.
 2. Skapa en signerad eller annoterad tagg `vX.Y.Z` och en GitHub Release.
 3. Kontrollera att webbpubliceringen lyckas.
 4. Kontrollera att GHCR har fått `latest`, versions- och commit-taggar.
@@ -20,10 +20,9 @@ Detta dokument beskriver den löpande, neutrala förvaltningen av projektet.
 
 ## Återkommande kontroll
 
-Den schemalagda workflowen **Projektets hälsokontroll** kör test, typkontroll och
-bygge varje vecka. GitHubs repository-notifieringar används för nya issues,
-pull requests och diskussioner. Aktivitet i repositorynätverket kan vid behov
-överblickas under **Insights → Forks**.
+Det schemalagda GitHub-jobbet **Projektets hälsokontroll** kör test, typkontroll
+och bygge varje vecka. GitHubs notifieringar kan användas för nya issues, pull
+requests och diskussioner. Forks går att se under **Insights → Forks**.
 
 ## Kommunikation om nya versioner
 
