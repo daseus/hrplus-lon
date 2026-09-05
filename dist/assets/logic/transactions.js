@@ -1,6 +1,6 @@
 // Parsning av transaktionslista (avvikande format med metadata-rader).
-import { cleanText, parseNumber } from "./format.js?v=36c34b0f5f67";
-import { splitFullName, splitPayItem } from "./names.js?v=36c34b0f5f67";
+import { cleanText, parseNumber } from "./format.js?v=611a87dd5efc";
+import { splitFullName, splitPayItem } from "./names.js?v=611a87dd5efc";
 
 export function parseTransactionList(matrix) {
   const headerIndex = matrix.findIndex((row) => {

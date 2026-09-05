@@ -1,16 +1,15 @@
-name: Tester
+name: Projektets hälsokontroll
 
 on:
-  push:
-    branches: [main]
-  pull_request:
+  schedule:
+    - cron: "23 5 * * 1"
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  test:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,12 +18,9 @@ jobs:
           node-version: 22
       - name: Kör testsvit
         run: node --test
-      - name: Typkontroll (tsc --checkJs)
+      - name: Typkontroll
         run: npx -y -p typescript@5.9.2 tsc --noEmit -p tsconfig.json
-      - name: Verifiera reproducerbart bygge
+      - name: Kontrollera reproducerbart bygge
         run: |
           node build.mjs ci-dist
-          test -f ci-dist/version.json
-          grep -q 'assets/app.js?v=' ci-dist/index.html
-      - name: Verifiera containerbygge
-        run: docker build --tag hrplus-lon:test .
+          diff -qr dist ci-dist

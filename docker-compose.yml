@@ -1,0 +1,10 @@
+services:
+  loneunderlag:
+    image: ghcr.io/daseus/hrplus-lon:latest
+    ports:
+      - "8848:8080"
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/cache/nginx

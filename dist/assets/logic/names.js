@@ -1,5 +1,5 @@
 // Uppdelning av sammanslagna namn- och löneartsfält.
-import { cleanText } from "./format.js?v=36c34b0f5f67";
+import { cleanText } from "./format.js?v=611a87dd5efc";
 
 export function splitPayItem(value) {
   const text = cleanText(value);

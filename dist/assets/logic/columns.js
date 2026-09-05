@@ -1,5 +1,5 @@
 // Kolumnmappning mellan HR+-rubriker och interna fältnamn samt uppslag.
-import { cleanText, parseNumber } from "./format.js?v=36c34b0f5f67";
+import { cleanText, parseNumber } from "./format.js?v=611a87dd5efc";
 
 export const COLUMN_ALIASES = {
   bookingDate: ["Bokföringsdatum"],

@@ -39,14 +39,18 @@ function shortHash(content) {
   return createHash("sha256").update(content).digest("hex").slice(0, 12);
 }
 
+function readText(path) {
+  return readFileSync(path, "utf8").replace(/\r\n?/g, "\n");
+}
+
 if (existsSync(dist)) rmSync(dist, { recursive: true, force: true });
 mkdirSync(join(dist, "vendor"), { recursive: true });
 mkdirSync(join(dist, "assets", "logic"), { recursive: true });
 
 const sourceNotice = existsSync(sourceNoticeFile)
-  ? readFileSync(sourceNoticeFile, "utf8")
+  ? readText(sourceNoticeFile)
   : "<!-- Lönefiler behandlas lokalt i webbläsaren och laddas inte upp. -->";
-const css = readFileSync(sourceStyles, "utf8");
+const css = readText(sourceStyles);
 const vendor = readFileSync(sourceVendor);
 const cssVersion = shortHash(css);
 const vendorVersion = shortHash(vendor);
@@ -55,7 +59,7 @@ const logicSources = new Map(
   readdirSync(sourceLogic)
     .filter((file) => file.endsWith(".js"))
     .sort()
-    .map((file) => [file, readFileSync(join(sourceLogic, file), "utf8")])
+    .map((file) => [file, readText(join(sourceLogic, file))])
 );
 const logicVersion = shortHash(
   Array.from(logicSources, ([file, content]) => `${file}\0${content}`).join("\0")
@@ -68,7 +72,7 @@ for (const [file, source] of logicSources) {
   writeFileSync(join(dist, "assets", "logic", file), content, "utf8");
 }
 
-let app = readFileSync(sourceApp, "utf8");
+let app = readText(sourceApp);
 for (const file of logicSources.keys()) {
   app = app.replaceAll(`./logic/${file}`, `./logic/${file}?v=${logicVersion}`);
 }
@@ -79,7 +83,7 @@ writeFileSync(join(dist, "assets", "app.css"), css, "utf8");
 writeFileSync(join(dist, "assets", "app.js"), app, "utf8");
 copyFileSync(sourceVendor, join(dist, "vendor", "xlsx.full.min.js"));
 
-let html = readFileSync(sourceIndex, "utf8");
+let html = readText(sourceIndex);
 html = html.replace(/^<!doctype html>/i, (doctype) => `${doctype}\n${sourceNotice}`);
 html = html.replace('href="assets/app.css"', `href="assets/app.css?v=${cssVersion}"`);
 html = html.replace('src="assets/app.js"', `src="assets/app.js?v=${appVersion}"`);

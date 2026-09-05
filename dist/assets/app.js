@@ -1,12 +1,12 @@
-import { cleanText, parseNumber, formatDate, formatDateRange, formatCurrency, formatOptionalCurrency, formatDecimal, formatInteger, sum, roundCurrency, escapeHtml } from "./logic/format.js?v=36c34b0f5f67";
-import { COLUMN_ALIASES, REQUIRED_FIELDS, resolveColumn, getValue, getText, getNumber } from "./logic/columns.js?v=36c34b0f5f67";
-import { splitPayItem, splitFullName } from "./logic/names.js?v=36c34b0f5f67";
-import { SECTION_ORDER, SECTION_LABELS, categorizeRow } from "./logic/categorize.js?v=36c34b0f5f67";
-import { getSourceType, inferSourceTypeFromRawRows } from "./logic/detect.js?v=36c34b0f5f67";
-import { parseTransactionList, findTransactionPaymentDate, findTransactionCompany } from "./logic/transactions.js?v=36c34b0f5f67";
-import { parsePayrollDraftRows } from "./logic/payrollDraft.js?v=36c34b0f5f67";
-import { isPayrollGrossRow, isPayrollNetPayRow, isPayrollSummaryRow, addPayrollReconciliationRows } from "./logic/payroll.js?v=36c34b0f5f67";
-import { summarizeSingleOrSpan, summarizeDateSpan } from "./logic/dates.js?v=36c34b0f5f67";
+import { cleanText, parseNumber, formatDate, formatDateRange, formatCurrency, formatOptionalCurrency, formatDecimal, formatInteger, sum, roundCurrency, escapeHtml } from "./logic/format.js?v=611a87dd5efc";
+import { COLUMN_ALIASES, REQUIRED_FIELDS, resolveColumn, getValue, getText, getNumber } from "./logic/columns.js?v=611a87dd5efc";
+import { splitPayItem, splitFullName } from "./logic/names.js?v=611a87dd5efc";
+import { SECTION_ORDER, SECTION_LABELS, categorizeRow } from "./logic/categorize.js?v=611a87dd5efc";
+import { getSourceType, inferSourceTypeFromRawRows } from "./logic/detect.js?v=611a87dd5efc";
+import { parseTransactionList, findTransactionPaymentDate, findTransactionCompany } from "./logic/transactions.js?v=611a87dd5efc";
+import { parsePayrollDraftRows } from "./logic/payrollDraft.js?v=611a87dd5efc";
+import { isPayrollGrossRow, isPayrollNetPayRow, isPayrollSummaryRow, addPayrollReconciliationRows } from "./logic/payroll.js?v=611a87dd5efc";
+import { summarizeSingleOrSpan, summarizeDateSpan } from "./logic/dates.js?v=611a87dd5efc";
 
 const APP_INFO = {
   name: "Löneunderlagsgranskare HR+",
