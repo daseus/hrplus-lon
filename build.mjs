@@ -30,8 +30,16 @@ const sourceStyles = join(root, "src", "styles.css");
 const sourceLogic = join(root, "src", "logic");
 const sourceVendor = join(root, "vendor", "xlsx.full.min.js");
 const sourceNoticeFile = join(root, "source-notice.html");
+const sourceThirdPartyNotices = join(root, "THIRD_PARTY_NOTICES.html");
 
-for (const required of [sourceIndex, sourceApp, sourceStyles, sourceLogic, sourceVendor]) {
+for (const required of [
+  sourceIndex,
+  sourceApp,
+  sourceStyles,
+  sourceLogic,
+  sourceVendor,
+  sourceThirdPartyNotices
+]) {
   if (!existsSync(required)) throw new Error(`Saknar ${relative(root, required)}.`);
 }
 
@@ -82,6 +90,7 @@ const appVersion = shortHash(app);
 writeFileSync(join(dist, "assets", "app.css"), css, "utf8");
 writeFileSync(join(dist, "assets", "app.js"), app, "utf8");
 copyFileSync(sourceVendor, join(dist, "vendor", "xlsx.full.min.js"));
+copyFileSync(sourceThirdPartyNotices, join(dist, "THIRD_PARTY_NOTICES.html"));
 
 let html = readText(sourceIndex);
 html = html.replace(/^<!doctype html>/i, (doctype) => `${doctype}\n${sourceNotice}`);
