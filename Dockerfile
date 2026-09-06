@@ -3,7 +3,7 @@
 FROM node:22-alpine AS build
 WORKDIR /app
 
-COPY index.html source-notice.html build.mjs ./
+COPY index.html source-notice.html THIRD_PARTY_NOTICES.html build.mjs ./
 COPY src ./src
 COPY vendor ./vendor
 
@@ -12,7 +12,8 @@ RUN node build.mjs
 FROM nginxinc/nginx-unprivileged:stable-alpine
 
 LABEL org.opencontainers.image.source="https://github.com/daseus/hrplus-lon" \
-      org.opencontainers.image.description="Officiell container för Löneunderlagsgranskare HR+"
+      org.opencontainers.image.description="Container för Löneunderlagsgranskare HR+" \
+      org.opencontainers.image.licenses="AGPL-3.0-or-later"
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist/ /usr/share/nginx/html/
